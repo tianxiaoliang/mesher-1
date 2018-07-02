@@ -12,6 +12,7 @@ import (
 	"github.com/go-chassis/mesher/protocol/dubbo/utils"
 
 	"github.com/ServiceComb/go-chassis/core/client"
+	"github.com/ServiceComb/go-chassis/core/invocation"
 	"github.com/ServiceComb/go-chassis/core/lager"
 )
 
@@ -27,14 +28,6 @@ type dubboChassisClient struct {
 	reqMutex sync.Mutex
 }
 
-func (c *dubboChassisClient) NewRequest(service, schemaID, operationID string, arg interface{}) *client.Request {
-	return &client.Request{
-		MicroServiceName: service,
-		Schema:           schemaID,
-		Operation:        operationID,
-		Arg:              arg,
-	}
-}
 
 //NewDubboChassisClient create new client
 func NewDubboChassisClient(options client.Options) client.ProtocolClient {
@@ -50,8 +43,8 @@ func (c *dubboChassisClient) String() string {
 	return "highway_client"
 }
 
-func (c *dubboChassisClient) Call(ctx context.Context, addr string, req *client.Request, rsp interface{}) error {
-	dubboReq := req.Arg.(*dubbo.Request)
+func (c *dubboChassisClient) Call(ctx context.Context, addr string, inv *invocation.Invocation, rsp interface{}) error {
+	dubboReq := inv.Args.(*dubbo.Request)
 
 	endPoint := addr
 	if endPoint == dubboproxy.DubboListenAddr {
