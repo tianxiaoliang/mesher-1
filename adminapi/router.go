@@ -5,6 +5,7 @@ import (
 	chassisCom "github.com/ServiceComb/go-chassis/core/common"
 	"github.com/ServiceComb/go-chassis/core/lager"
 	chassisTLS "github.com/ServiceComb/go-chassis/core/tls"
+	"github.com/ServiceComb/go-chassis/server/restful"
 	"github.com/emicklei/go-restful"
 	"github.com/go-chassis/mesher/common"
 	"github.com/go-chassis/mesher/config"
@@ -15,6 +16,7 @@ import (
 	"time"
 )
 
+//Init function initiates admin server config and runs it
 func Init() (err error) {
 	var isAdminEnable *bool = config.GetConfig().Admin.Enable
 
@@ -26,16 +28,16 @@ func Init() (err error) {
 	errCh := make(chan error)
 	metrics.Init()
 
-	adminServerUri := config.GetConfig().Admin.ServerUri
+	adminServerURI := config.GetConfig().Admin.ServerUri
 
-	if adminServerUri == "" {
-		adminServerUri = "0.0.0.0:30102"
+	if adminServerURI == "" {
+		adminServerURI = "0.0.0.0:30102"
 	}
-	ln, err := net.Listen("tcp", adminServerUri)
+	ln, err := net.Listen("tcp", adminServerURI)
 	if err != nil {
 		return
 	}
-	tlsConfig, err := getTlsConfig()
+	tlsConfig, err := getTLSConfig()
 	if err != nil {
 		return
 	}
@@ -66,10 +68,10 @@ func Init() (err error) {
 	return
 }
 
-func getTlsConfig() (*tls.Config, error) {
+func getTLSConfig() (*tls.Config, error) {
 	var tlsConfig *tls.Config
 	sslTag := genTag(common.ComponentName, chassisCom.Provider)
-	tmpTlsConfig, sslConfig, err := chassisTLS.GetTLSConfigByService(common.ComponentName, "", chassisCom.Provider)
+	tmpTLSConfig, sslConfig, err := chassisTLS.getTLSConfigByService(common.ComponentName, "", chassisCom.Provider)
 	if err != nil {
 		if !chassisTLS.IsSSLConfigNotExist(err) {
 			return nil, err
@@ -77,7 +79,7 @@ func getTlsConfig() (*tls.Config, error) {
 	} else {
 		lager.Logger.Warnf("%s TLS mode, verify peer: %t, cipher plugin: %s.",
 			sslTag, sslConfig.VerifyPeer, sslConfig.CipherPlugin)
-		tlsConfig = tmpTlsConfig
+		tlsConfig = tmpTLSConfig
 	}
 	return tlsConfig, nil
 }

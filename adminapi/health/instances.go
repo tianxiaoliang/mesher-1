@@ -13,6 +13,7 @@ import (
 	"github.com/ServiceComb/go-chassis/core/registry"
 )
 
+//GetMesherHealth returns health
 func GetMesherHealth() *Health {
 	serviceName, version, err := getServiceStatus()
 	resp := &Health{
@@ -32,21 +33,21 @@ func GetMesherHealth() *Health {
 }
 
 func getServiceStatus() (serviceName, version string, err error) {
-	appId := config.GlobalDefinition.AppID
+	appID := config.GlobalDefinition.AppID
 	microServiceName := config.SelfServiceName
 	version = config.SelfVersion
 	if version == "" {
 		version = ver.DefaultVersion
 	}
 	environment := config.MicroserviceDefinition.ServiceDescription.Environment
-	serviceId, err := registry.DefaultServiceDiscoveryService.GetMicroServiceID(appId, microServiceName, version, environment)
+	serviceID, err := registry.DefaultServiceDiscoveryService.GetMicroServiceID(appID, microServiceName, version, environment)
 	if err != nil {
 		return microServiceName, version, err
 	}
-	if len(serviceId) == 0 {
-		return microServiceName, version, errors.New("serviceId is empty")
+	if len(serviceID) == 0 {
+		return microServiceName, version, errors.New("serviceID is empty")
 	}
-	instances, err := registry.DefaultServiceDiscoveryService.GetMicroServiceInstances(serviceId, serviceId)
+	instances, err := registry.DefaultServiceDiscoveryService.GetMicroServiceInstances(serviceID, serviceID)
 	if err != nil {
 		return microServiceName, version, err
 	}
@@ -54,7 +55,7 @@ func getServiceStatus() (serviceName, version string, err error) {
 		return microServiceName, version, errors.New("no instance found")
 	}
 	for _, instance := range instances {
-		ok, err := registry.DefaultRegistrator.Heartbeat(serviceId, instance.InstanceID)
+		ok, err := registry.DefaultRegistrator.Heartbeat(serviceID, instance.InstanceID)
 		if err != nil {
 			return microServiceName, version, err
 		}

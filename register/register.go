@@ -1,13 +1,13 @@
 package register
 
 import (
-	"github.com/go-chassis/mesher/common"
 	chassisCommon "github.com/ServiceComb/go-chassis/core/common"
 	"github.com/ServiceComb/go-chassis/core/config"
 	chassisModel "github.com/ServiceComb/go-chassis/core/config/model"
 	"github.com/ServiceComb/go-chassis/core/lager"
 	"github.com/ServiceComb/go-chassis/core/registry"
 	"github.com/ServiceComb/go-chassis/util/iputil"
+	"github.com/go-chassis/mesher/common"
 	"strings"
 )
 

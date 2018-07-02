@@ -34,7 +34,7 @@ func Start() error {
 		return err
 	}
 	if err := adminapi.Init(); err != nil {
-		log.Println("Error occured in starting admin server", err)
+		log.Println("Error occurred in starting admin server", err)
 	}
 	register.AdaptEndpoints()
 	if cmd.Configs.LocalServicePorts == "" {
