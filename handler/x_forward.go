@@ -17,7 +17,7 @@ func (h *XForwardHandler) Handle(chain *handler.Chain, inv *invocation.Invocatio
 		orgHost := orgReq.Req.Header["Host"]
 		orgReq.Req.Header["X-Forwarded-Host"] = orgHost
 	}
-	chain.Next(inv, func(r *invocation.InvocationResponse) error {
+	chain.Next(inv, func(r *invocation.Response) error {
 		return cb(r)
 	})
 }

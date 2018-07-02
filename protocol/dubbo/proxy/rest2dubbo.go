@@ -158,7 +158,7 @@ func TransparentForwardHandler(w http.ResponseWriter, r *http.Request) {
 		lager.Logger.Error("Get Chain failed.", err)
 		return
 	}
-	c.Next(inv, func(ir *invocation.InvocationResponse) error {
+	c.Next(inv, func(ir *invocation.Response) error {
 		return handleRequestForDubbo(w, inv, ir)
 	})
 	dubboRsp := inv.Reply.(*dubboclient.WrapResponse).Resp
@@ -167,7 +167,7 @@ func TransparentForwardHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handleRequestForDubbo(w http.ResponseWriter, inv *invocation.Invocation, ir *invocation.InvocationResponse) error {
+func handleRequestForDubbo(w http.ResponseWriter, inv *invocation.Invocation, ir *invocation.Response) error {
 	if ir != nil {
 		if ir.Err != nil {
 			switch ir.Err.(type) {

@@ -19,7 +19,7 @@ func (ls *LocalSelectionHandler) Handle(chain *handler.Chain, inv *invocation.In
 	// if work as sidecar and handler request from remote,then endpoint should be localhost:port
 	inv.Endpoint = cmd.Configs.PortsMap[inv.Protocol]
 	if inv.Endpoint == "" {
-		r := &invocation.InvocationResponse{
+		r := &invocation.Response{
 			Err: errors.New(
 				fmt.Sprintf("[%s] is not supported, [%s] didn't set env [%s] or cmd parameter --service-ports before mesher start",
 					inv.Protocol, inv.MicroServiceName, common.EnvServicePorts)),
@@ -27,7 +27,7 @@ func (ls *LocalSelectionHandler) Handle(chain *handler.Chain, inv *invocation.In
 		cb(r)
 		return
 	}
-	chain.Next(inv, func(r *invocation.InvocationResponse) error {
+	chain.Next(inv, func(r *invocation.Response) error {
 		return cb(r)
 	})
 }

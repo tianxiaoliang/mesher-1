@@ -89,8 +89,8 @@ func LocalRequestHandler(w http.ResponseWriter, r *http.Request) {
 		serviceLabelValues := map[string]string{metrics.ServiceName: inv.MicroServiceName, metrics.AppID: inv.AppID, metrics.Version: inv.Version}
 		metrics.DefaultPrometheusExporter.Summary(metrics.RequestLatencySeconds, timeTaken, metrics.LabelNames, serviceLabelValues)
 	}(time.Now())
-	var invRsp *invocation.InvocationResponse
-	c.Next(inv, func(ir *invocation.InvocationResponse) error {
+	var invRsp *invocation.Response
+	c.Next(inv, func(ir *invocation.Response) error {
 		//Send the request to the destination
 		invRsp = ir
 		if invRsp != nil {
@@ -129,8 +129,8 @@ func RemoteRequestHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var invRsp *invocation.InvocationResponse
-	c.Next(inv, func(ir *invocation.InvocationResponse) error {
+	var invRsp *invocation.Response
+	c.Next(inv, func(ir *invocation.Response) error {
 		//Send the request to the destination
 		invRsp = ir
 		if invRsp != nil {
@@ -153,7 +153,7 @@ func copyChassisResp2HttpResp(w http.ResponseWriter, resp *rest.Response) {
 	io.Copy(w, resp.Resp.Body)
 	resp.Resp.Body.Close()
 }
-func handleRequest(w http.ResponseWriter, inv *invocation.Invocation, ir *invocation.InvocationResponse) (*rest.Response, error) {
+func handleRequest(w http.ResponseWriter, inv *invocation.Invocation, ir *invocation.Response) (*rest.Response, error) {
 	if ir != nil {
 		if ir.Err != nil {
 			//handler only mesher errors, ignore http response err

@@ -188,7 +188,7 @@ func Handle(ctx *dubbo.InvokeContext) error {
 				}
 			}
 
-			c.Next(inv, func(ir *invocation.InvocationResponse) error {
+			c.Next(inv, func(ir *invocation.Response) error {
 				return handleDubboRequest(inv, ctx, ir)
 			})
 		} else { //come from other mesher
@@ -198,7 +198,7 @@ func Handle(ctx *dubbo.InvokeContext) error {
 				lager.Logger.Error("Get Provider Chain failed.", err)
 				return err
 			}
-			c.Next(inv, func(ir *invocation.InvocationResponse) error {
+			c.Next(inv, func(ir *invocation.Response) error {
 				return handleDubboRequest(inv, ctx, ir)
 			})
 		}
@@ -208,7 +208,7 @@ func Handle(ctx *dubbo.InvokeContext) error {
 	return nil
 }
 
-func handleDubboRequest(inv *invocation.Invocation, ctx *dubbo.InvokeContext, ir *invocation.InvocationResponse) error {
+func handleDubboRequest(inv *invocation.Invocation, ctx *dubbo.InvokeContext, ir *invocation.Response) error {
 	if ir != nil {
 		if ir.Err != nil {
 			switch ir.Err.(type) {
@@ -295,7 +295,7 @@ func ProxyRestHandler(ctx *dubbo.InvokeContext) error {
 		}
 	}
 
-	c.Next(inv, func(ir *invocation.InvocationResponse) error {
+	c.Next(inv, func(ir *invocation.Response) error {
 		//Send the request to the destination
 		return handleRequest(ctx, req, inv.Reply.(*rest.Response), ctx.Rsp, inv, ir)
 	})
@@ -304,7 +304,7 @@ func ProxyRestHandler(ctx *dubbo.InvokeContext) error {
 }
 
 func handleRequest(ctx *dubbo.InvokeContext, req *rest.Request, resp *rest.Response,
-	dubboRsp *dubbo.DubboRsp, inv *invocation.Invocation, ir *invocation.InvocationResponse) error {
+	dubboRsp *dubbo.DubboRsp, inv *invocation.Invocation, ir *invocation.Response) error {
 	if ir != nil {
 		if ir.Err != nil {
 			switch ir.Err.(type) {

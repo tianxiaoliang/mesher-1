@@ -4,7 +4,7 @@ A light weight service mesh implementation based on [go chassis](https://github.
 
 
 # Features
-- go-chassis: Mesher has all of features of [go chassis](https://github.com/ServiceComb/go-chassis) , 
+- go-chassis: Mesher has all of features of [go chassis](https://github.com/ServiceComb/go-chassis)
 a go micro service framework
 - Admin API：Listen on isolated port, let user to query runtime information 
 
