@@ -10,6 +10,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+//Version is a struct which has attributes for version
 type Version struct {
 	Version   string `json:"version" yaml:"version"`
 	Commit    string `json:"commit" yaml:"commit"`
@@ -17,6 +18,7 @@ type Version struct {
 	GoChassis string `json:"Go-Chassis" yaml:"Go-Chassis"`
 }
 
+//Constants
 const (
 	VersionFile    = "VERSION"
 	DefaultVersion = "latest"
@@ -56,6 +58,7 @@ func getVersionSet() (*Version, error) {
 	return v, nil
 }
 
+//Ver returns version
 func Ver() *Version {
 	return version
 }

@@ -11,22 +11,31 @@ import (
 )
 
 var dr DestinationResolver
+
+//DestinationResolverPlugins is a map
 var DestinationResolverPlugins map[string]func() DestinationResolver
+
+//SelfEndpoint is a string
 var SelfEndpoint = "#To be init#"
 
+//DefaultPlugin is a contant which stores default plugin name
 const DefaultPlugin = "host"
 
+//ErrUnknownResolver is of type error
 var ErrUnknownResolver = errors.New("unknown Destination Resolver")
 
+//DestinationResolver is a interface with Resolve method
 type DestinationResolver interface {
-	Resolve(sourceAddr string, header map[string]string, rawUri string, destinationName *string) error
+	Resolve(sourceAddr string, header map[string]string, rawURI string, destinationName *string) error
 }
 
+//DefaultDestinationResolver is a struct
 type DefaultDestinationResolver struct {
 }
 
-func (dr *DefaultDestinationResolver) Resolve(sourceAddr string, header map[string]string, rawUri string, destinationName *string) error {
-	u, err := url.Parse(rawUri)
+//Resolve resolves service's endpoint
+func (dr *DefaultDestinationResolver) Resolve(sourceAddr string, header map[string]string, rawURI string, destinationName *string) error {
+	u, err := url.Parse(rawURI)
 	if err != nil {
 		lager.Logger.Error("Can not parse url", err)
 		return err
@@ -50,12 +59,18 @@ func (dr *DefaultDestinationResolver) Resolve(sourceAddr string, header map[stri
 	*destinationName = u.Host
 	return nil
 }
+
+//New function returns new DefaultDestinationResolver struct object
 func New() DestinationResolver {
 	return &DefaultDestinationResolver{}
 }
+
+//GetDestinationResolver returns destinationResolver object
 func GetDestinationResolver() DestinationResolver {
 	return dr
 }
+
+//InstallDestinationResolver function installs new plugin
 func InstallDestinationResolver(name string, newFunc func() DestinationResolver) {
 	DestinationResolverPlugins[name] = newFunc
 	log.Printf("Installed DestinationResolver Plugin, name=%s", name)
@@ -65,6 +80,8 @@ func init() {
 	dr = &DefaultDestinationResolver{}
 	InstallDestinationResolver(DefaultPlugin, New)
 }
+
+//Init function reads config and initiates it
 func Init() error {
 	var name string
 	if config.GetConfig().Plugin != nil {

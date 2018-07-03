@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+//DubboClient is a struct which has attributes for dubboClient
 type DubboClient struct {
 	addr          string
 	mtx           sync.Mutex
@@ -19,32 +20,39 @@ type DubboClient struct {
 	closed        bool
 	routeMgr      *util.RoutineManager
 }
+
+//WrapResponse is a struct
 type WrapResponse struct {
 	Resp *dubbo.DubboRsp
 }
 
+//CachedClients is a variable which stores
 var CachedClients *ClientMgr
 
 func init() {
 	CachedClients = NewClientMgr()
 }
 
+//RespondResult is a struct which has attribute for dubbo response
 type RespondResult struct {
 	Rsp  *dubbo.DubboRsp
 	Wait *chan int
 }
 
+//ClientMgr is a struct which has attributes for managing client
 type ClientMgr struct {
 	mapMutex sync.Mutex
 	clients  map[string]*DubboClient
 }
 
+//NewClientMgr is a function which creates new clientmanager and returns it
 func NewClientMgr() *ClientMgr {
 	tmp := new(ClientMgr)
 	tmp.clients = make(map[string]*DubboClient)
 	return tmp
 }
 
+//GetClient is a function which returns the particular client for that address
 func (this *ClientMgr) GetClient(addr string) (*DubboClient, error) {
 	this.mapMutex.Lock()
 	defer this.mapMutex.Unlock()
@@ -74,6 +82,7 @@ func (this *ClientMgr) GetClient(addr string) (*DubboClient, error) {
 	}
 }
 
+//NewDubboClient is a function which creates new dubbo client for given value
 func NewDubboClient(addr string, routeMgr *util.RoutineManager) *DubboClient {
 	tmp := &DubboClient{}
 	tmp.addr = addr
@@ -86,9 +95,13 @@ func NewDubboClient(addr string, routeMgr *util.RoutineManager) *DubboClient {
 	}
 	return tmp
 }
+
+//GetAddr is a method which returns address of particular client
 func (this *DubboClient) GetAddr() string {
 	return this.addr
 }
+
+//ReOpen is a method which reopens connection
 func (this *DubboClient) ReOpen() error {
 	this.mtx.Lock()
 	defer this.mtx.Unlock()
@@ -96,6 +109,7 @@ func (this *DubboClient) ReOpen() error {
 	return this.open()
 }
 
+//Open is a method which opens a connection
 func (this *DubboClient) Open() error {
 	this.mtx.Lock()
 	defer this.mtx.Unlock()
@@ -120,6 +134,7 @@ func (this *DubboClient) open() error {
 	return nil
 }
 
+//Close is a method which closes a connection
 func (this *DubboClient) Close() {
 	this.mtx.Lock()
 	defer this.mtx.Unlock()
@@ -142,6 +157,7 @@ func (this *DubboClient) close() {
 	this.conn.Close()
 }
 
+//AddWaitMsg is a method which adds wait message in the response
 func (this *DubboClient) AddWaitMsg(msgID int64, result *RespondResult) {
 	this.mapMutex.Lock()
 	if this.msgWaitRspMap != nil {
@@ -150,6 +166,7 @@ func (this *DubboClient) AddWaitMsg(msgID int64, result *RespondResult) {
 	this.mapMutex.Unlock()
 }
 
+//RemoveWaitMsg is a method which delete waiting message
 func (this *DubboClient) RemoveWaitMsg(msgID int64) {
 	this.mapMutex.Lock()
 	if this.msgWaitRspMap != nil {
@@ -158,11 +175,13 @@ func (this *DubboClient) RemoveWaitMsg(msgID int64) {
 	this.mapMutex.Unlock()
 }
 
+//Svc is a method
 func (this *DubboClient) Svc(agr interface{}) interface{} {
 	this.conn.SendMsg(agr.(*dubbo.Request))
 	return nil
 }
 
+//Send is a method which send request from dubbo client
 func (this *DubboClient) Send(dubboReq *dubbo.Request) (*dubbo.DubboRsp, error) {
 	this.mapMutex.Lock()
 	if this.closed {
@@ -175,7 +194,7 @@ func (this *DubboClient) Send(dubboReq *dubbo.Request) (*dubbo.DubboRsp, error) 
 	this.AddWaitMsg(msgID, result)
 
 	this.routeMgr.Spawn(this, dubboReq, fmt.Sprintf("SndMsgID-%d", dubboReq.GetMsgID()))
-	var timeout bool = false
+	var timeout = false
 	select {
 	case <-wait:
 		timeout = false
@@ -196,6 +215,7 @@ func (this *DubboClient) Send(dubboReq *dubbo.Request) (*dubbo.DubboRsp, error) 
 	}
 }
 
+//RspCallBack is a method
 func (this *DubboClient) RspCallBack(rsp *dubbo.DubboRsp) {
 	msgID := rsp.GetID()
 	var result *RespondResult
@@ -210,6 +230,8 @@ func (this *DubboClient) RspCallBack(rsp *dubbo.DubboRsp) {
 		*result.Wait <- 1
 	}
 }
+
+//Closed is a method which checks whether connection has been closed or not
 func (this *DubboClient) Closed() bool {
 	this.mtx.Lock()
 	defer this.mtx.Unlock()

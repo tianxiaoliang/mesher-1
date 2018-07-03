@@ -15,22 +15,29 @@ import (
 	"path/filepath"
 )
 
+//Constant for mesher conf file
 const (
 	ConfFile = "mesher.yaml"
 )
 
+//Mode is of type string which gives mode of mesher deployment
 var Mode string
 var mesherConfig *MesherConfig
 
+//GetConfig returns mesher config
 func GetConfig() *MesherConfig {
 	return mesherConfig
 }
+
+//SetConfig sets new mesher config from input config
 func SetConfig(nc *MesherConfig) {
 	if mesherConfig == nil {
 		mesherConfig = &MesherConfig{}
 	}
 	*mesherConfig = *nc
 }
+
+//GetConfigFilePath returns config file path
 func GetConfigFilePath() (string, error) {
 	if cmd.Configs.ConfigFile == "" {
 		wd, err := fileutil.GetWorkDir()
@@ -42,11 +49,12 @@ func GetConfigFilePath() (string, error) {
 	return cmd.Configs.ConfigFile, nil
 }
 
+//InitProtocols initiates protocols
 func InitProtocols() error {
 	// todo if sdk init failed, do not call the data
 	if len(config.GlobalDefinition.Cse.Protocols) == 0 {
 		config.GlobalDefinition.Cse.Protocols = map[string]model.Protocol{
-			common.HttpProtocol: {Listen: "127.0.0.1:30101"},
+			common.HTTPProtocol: {Listen: "127.0.0.1:30101"},
 		}
 
 		return server.Init()
@@ -54,6 +62,7 @@ func InitProtocols() error {
 	return nil
 }
 
+//Init reads config and initiates
 func Init() error {
 	mesherConfig = &MesherConfig{}
 	contents, err := GetConfigContents(ConfFile)
@@ -67,6 +76,7 @@ func Init() error {
 	return nil
 }
 
+//GetConfigContents returns config contents
 func GetConfigContents(key string) (string, error) {
 	f, err := GetConfigFilePath()
 	if err != nil {
@@ -82,6 +92,7 @@ func GetConfigContents(key string) (string, error) {
 	return contents, nil
 }
 
+//SetKeyValueByFile reads mesher.yaml and gets key and value
 func SetKeyValueByFile(key, f string) string {
 	var contents string
 	if _, err := os.Stat(f); err != nil {

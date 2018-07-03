@@ -18,8 +18,9 @@ const (
 	ResponseNullValue     = byte(2)
 )
 
+//DubboRsp is a struct which has attributes for dubbo response
 type DubboRsp struct {
-	DubboRpcResult
+	DubboRPCResult
 	mID       int64
 	mVersion  string
 	mStatus   byte
@@ -27,6 +28,7 @@ type DubboRsp struct {
 	mErrorMsg string
 }
 
+//Init method initializes value
 func (p *DubboRsp) Init() {
 	p.mID = 0
 	p.mVersion = "0.0.0"
@@ -35,67 +37,85 @@ func (p *DubboRsp) Init() {
 	p.mErrorMsg = ""
 	//p.mResult = nil
 }
+
+//IsHeartbeat is a method which checks for heartbeat
 func (p *DubboRsp) IsHeartbeat() bool {
 	return p.mEvent
 }
 
+//SetEvent is a method which sets event
 func (p *DubboRsp) SetEvent(bEvt bool) {
 	p.mEvent = bEvt
 }
 
+//GetStatus is a method which gets status
 func (p *DubboRsp) GetStatus() byte {
 	return p.mStatus
 }
 
+//SetStatus is a method which sets status
 func (p *DubboRsp) SetStatus(status byte) {
 	p.mStatus = status
 }
 
+//GetID is a method which gets ID
 func (p *DubboRsp) GetID() int64 {
 	return p.mID
 }
 
+//SetID is a method which sets ID
 func (p *DubboRsp) SetID(reqID int64) {
 	p.mID = reqID
 }
 
+//GetErrorMsg is a method which gets error message
 func (p *DubboRsp) GetErrorMsg() string {
 	return p.mErrorMsg
 }
 
+//SetErrorMsg is a method which sets error message
 func (p *DubboRsp) SetErrorMsg(err string) {
 	p.mErrorMsg = err
 }
 
-type DubboRpcResult struct {
+//DubboRPCResult is a struct which has attibutes for dubbo rpc result
+type DubboRPCResult struct {
 	attchments map[string]string
 	exception  interface{}
 	value      interface{}
 }
 
-func NewDubboRpcResult() *DubboRpcResult {
-	return &DubboRpcResult{make(map[string]string), nil, nil}
+//NewDubboRPCResult is a function which create new dubbo rpc result
+func NewDubboRPCResult() *DubboRPCResult {
+	return &DubboRPCResult{make(map[string]string), nil, nil}
 }
-func (p *DubboRpcResult) GetValue() interface{} {
+
+//GetValue is a method which gets value
+func (p *DubboRPCResult) GetValue() interface{} {
 	return p.value
 }
 
-func (p *DubboRpcResult) SetValue(v interface{}) {
+//SetValue is a method which sets value
+func (p *DubboRPCResult) SetValue(v interface{}) {
 	p.value = v
 }
 
-func (p *DubboRpcResult) GetException() interface{} {
+//GetException is a method which gets exception
+func (p *DubboRPCResult) GetException() interface{} {
 	return p.exception
 }
 
-func (p *DubboRpcResult) SetException(e interface{}) {
+//SetException is a method which sets exception
+func (p *DubboRPCResult) SetException(e interface{}) {
 	p.exception = e
 }
 
-func (p *DubboRpcResult) GetAttachments() map[string]string {
+//GetAttachments is a method which gets attachment
+func (p *DubboRPCResult) GetAttachments() map[string]string {
 	return p.attchments
 }
 
-func (p *DubboRpcResult) SetAttachments(attach map[string]string) {
+//SetAttachments is a method which sets attachment
+func (p *DubboRPCResult) SetAttachments(attach map[string]string) {
 	p.attchments = attach
 }

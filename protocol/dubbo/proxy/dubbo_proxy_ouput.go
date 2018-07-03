@@ -34,17 +34,21 @@ const (
 	ProxyTag = "mesherproxy"
 )
 
+// DubboListenAddr is a variable of type string used for storing listen address
 var DubboListenAddr string
 
+//ProxyError is a struct
 type ProxyError struct {
 	Message string
 }
 
+//Error is a method which returns error
 func (e ProxyError) Error() string {
 	return e.Message
 }
 
-func ConvertDubboReqToHttpReq(ctx *dubbo.InvokeContext, dubboReq *dubbo.Request) *rest.Request {
+//ConvertDubboReqToHTTPReq is a method which converts dubbo requesto to http request
+func ConvertDubboReqToHTTPReq(ctx *dubbo.InvokeContext, dubboReq *dubbo.Request) *rest.Request {
 	restReq := &rest.Request{Req: &http.Request{
 		URL:    &url.URL{},
 		Header: make(http.Header),
@@ -109,6 +113,7 @@ func ConvertDubboReqToHttpReq(ctx *dubbo.InvokeContext, dubboReq *dubbo.Request)
 	return restReq
 }
 
+//ConvertRestRspToDubboRsp is a function which converts rest response to dubbo response
 func ConvertRestRspToDubboRsp(ctx *dubbo.InvokeContext, resp *rest.Response, dubboRsp *dubbo.DubboRsp) {
 	var v interface{}
 	var err error
@@ -140,6 +145,7 @@ func ConvertRestRspToDubboRsp(ctx *dubbo.InvokeContext, resp *rest.Response, dub
 
 }
 
+//Handle is a function
 func Handle(ctx *dubbo.InvokeContext) error {
 	interfaceName := ctx.Req.GetAttachment(dubbo.PathKey, "")
 	svc := schema.GetSvcByInterface(interfaceName)
@@ -239,7 +245,7 @@ func handleDubboRequest(inv *invocation.Invocation, ctx *dubbo.InvokeContext, ir
 }
 
 func preHandleToRest(ctx *dubbo.InvokeContext) (*rest.Request, *invocation.Invocation, string) {
-	restReq := ConvertDubboReqToHttpReq(ctx, ctx.Req)
+	restReq := ConvertDubboReqToHTTPReq(ctx, ctx.Req)
 	if restReq == nil {
 		return nil, nil, ""
 	}
@@ -256,6 +262,7 @@ func preHandleToRest(ctx *dubbo.InvokeContext) (*rest.Request, *invocation.Invoc
 	return restReq, inv, source
 }
 
+//ProxyRestHandler is a function
 func ProxyRestHandler(ctx *dubbo.InvokeContext) error {
 	var err error
 	var c *handler.Chain

@@ -9,18 +9,22 @@ import (
 )
 
 var (
-	ServiceNilError = errors.New("resolved as a nil service")
+	//ErrFoo is of type error
+	ErrFoo = errors.New("resolved as a nil service")
 )
 
+//SourceResolver is a interface which has Resolve function
 type SourceResolver interface {
 	Resolve(source string) *registry.SourceInfo
 }
 
 var sr SourceResolver = &DefaultSourceResolver{}
 
+//DefaultSourceResolver is a struct
 type DefaultSourceResolver struct {
 }
 
+//Resolve is a method which resolves service endpoint
 func (sr *DefaultSourceResolver) Resolve(source string) *registry.SourceInfo {
 	if source == "127.0.0.1" {
 		return nil
@@ -35,7 +39,7 @@ func (sr *DefaultSourceResolver) Resolve(source string) *registry.SourceInfo {
 	}
 
 	if ms == nil {
-		lager.Logger.Warnf("Service is nil for IP %s, err: %v", source, ServiceNilError)
+		lager.Logger.Warnf("Service is nil for IP %s, err: %v", source, ErrFoo)
 		return nil
 	}
 	sourceInfo := &registry.SourceInfo{}
@@ -49,6 +53,7 @@ func (sr *DefaultSourceResolver) Resolve(source string) *registry.SourceInfo {
 	return sourceInfo
 }
 
+//GetSourceResolver returns interface object
 func GetSourceResolver() SourceResolver {
 	return sr
 }

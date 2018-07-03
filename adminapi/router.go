@@ -27,7 +27,7 @@ func Init() (err error) {
 	errCh := make(chan error)
 	metrics.Init()
 
-	adminServerURI := config.GetConfig().Admin.ServerUri
+	adminServerURI := config.GetConfig().Admin.ServerURI
 
 	if adminServerURI == "" {
 		adminServerURI = "0.0.0.0:30102"

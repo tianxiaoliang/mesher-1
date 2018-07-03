@@ -13,6 +13,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
+//Constants with attributes for metrics data
 const (
 	TotalRequest          = "requests_total"
 	TotalSuccess          = "successes_total"
@@ -26,12 +27,14 @@ const (
 )
 
 var (
+	//LabelNames is a list with servicename, appID, version
 	LabelNames = []string{ServiceName, AppID, Version}
 	mutex      = sync.Mutex{}
 )
 
 var onceEnable sync.Once
 
+//Init function initiates all config
 func Init() {
 	mesherLabelValues := map[string]string{ServiceName: config.SelfServiceName, AppID: config.GlobalDefinition.AppID, Version: config.SelfVersion}
 	mesherStartTime := time.Now().Unix()
@@ -45,6 +48,8 @@ func Init() {
 		})
 	}
 }
+
+//RecordResponse record the response
 func RecordResponse(inv *invocation.Invocation, statusCode int) {
 	mutex.Lock()
 	defer mutex.Unlock()

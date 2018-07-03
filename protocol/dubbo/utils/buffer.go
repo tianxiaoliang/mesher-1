@@ -7,6 +7,7 @@ import (
 	"fmt"
 )
 
+//BaseError is a struct
 type BaseError struct {
 	ErrMsg string
 }
@@ -15,6 +16,7 @@ func (p *BaseError) Error() string {
 	return p.ErrMsg
 }
 
+//TypMap is a variable of type map
 var TypMap map[string]reflect.Type
 
 func init() {
@@ -26,6 +28,7 @@ const (
 	DefaultBufferSize = 1024
 )
 
+//ReadBuffer is a struct
 type ReadBuffer struct {
 	buffer   []byte
 	rdInd    int
@@ -33,12 +36,14 @@ type ReadBuffer struct {
 	capacity int
 }
 
+//WriteBuffer is a struct
 type WriteBuffer struct {
 	buffer   []byte
 	wrInd    int
 	capacity int
 }
 
+//Init is a method to initialize write buffer attributes
 func (b *WriteBuffer) Init(size int) {
 	if size == 0 {
 		size = DefaultBufferSize
@@ -48,6 +53,7 @@ func (b *WriteBuffer) Init(size int) {
 	b.capacity = size
 }
 
+//Write is a method to write into buffer
 func (b *WriteBuffer) Write(p []byte) (n int, err error) {
 	result := b.WriteBytes(p)
 	if result > 0 {
@@ -70,6 +76,7 @@ func (b *WriteBuffer) grow(n int) int {
 	return n
 }
 
+//WriteBytes is a method to write bytes
 func (b *WriteBuffer) WriteBytes(src []byte) int {
 	size := len(src)
 	if b.capacity < (b.wrInd + size) {
@@ -84,6 +91,7 @@ func (b *WriteBuffer) WriteBytes(src []byte) int {
 	return size
 }
 
+//WriteIndex is a method to write index
 func (b *WriteBuffer) WriteIndex(index int) error {
 	if index <= b.capacity {
 		b.wrInd = index
@@ -93,30 +101,36 @@ func (b *WriteBuffer) WriteIndex(index int) error {
 	return nil
 }
 
+//WriteByte is a method to write particular byte
 func (b *WriteBuffer) WriteByte(src byte) error {
 	gh := hessian.NewGoHessian(nil, nil)
 	err := gh.ToBytes2(int32(src), b)
 	return err
 }
 
+//WriteObject is a method to write object
 func (b *WriteBuffer) WriteObject(src interface{}) error {
 	gh := hessian.NewGoHessian(nil, nil)
 	err := gh.ToBytes2(src, b)
 	return err
 }
 
+//WrittenBytes is a methodto get amount of bytes written
 func (b *WriteBuffer) WrittenBytes() int {
 	return b.wrInd
 }
 
+//GetBuf is a method to get buffer
 func (b *WriteBuffer) GetBuf() []byte {
 	return b.buffer
 }
 
+//GetValidData is a method to get valid data
 func (b *WriteBuffer) GetValidData() []byte {
 	return b.buffer[0:b.wrInd]
 }
 
+//SetBuffer is a method to set buffer data
 func (b *ReadBuffer) SetBuffer(src []byte) {
 	b.buffer = src
 	b.rdInd = 0
@@ -124,6 +138,7 @@ func (b *ReadBuffer) SetBuffer(src []byte) {
 	b.length = len(src)
 }
 
+//Init is a method to initialize read buffer
 func (b *ReadBuffer) Init(capacity int) {
 	b.buffer = make([]byte, capacity)
 	b.length = 0
@@ -131,30 +146,35 @@ func (b *ReadBuffer) Init(capacity int) {
 	b.capacity = capacity
 }
 
+//ReadByte is a method to read particular byte from buffer
 func (b *ReadBuffer) ReadByte() byte {
 	var tmp interface{}
 	tmp, _ = b.ReadObject()
 	return byte(tmp.(int32))
 }
 
+//ReadBytes is a method to read data from buffer
 func (b *ReadBuffer) ReadBytes(len int) []byte {
 	start := b.rdInd
 	b.rdInd = b.rdInd + len
 	return b.buffer[start:b.rdInd]
 }
 
+//ReadObject is a method to read buffer and return object
 func (b *ReadBuffer) ReadObject() (interface{}, error) {
 	gh := hessian.NewGoHessian(TypMap, nil)
 	obj, err := gh.ToObject2(b)
 	return obj, err
 }
 
+//ReadString is a method to read buffer and return as string
 func (b *ReadBuffer) ReadString() string {
 	gh := hessian.NewGoHessian(nil, nil)
 	obj, _ := gh.ToObject2(b)
 	return obj.(string)
 }
 
+//ReadMap is a method to read buffer and return as a map
 func (b *ReadBuffer) ReadMap() (map[string]string, error) {
 	gh := hessian.NewGoHessian(nil, nil)
 	obj, err := gh.ToObject2(b)
@@ -170,7 +190,7 @@ func (b *ReadBuffer) ReadMap() (map[string]string, error) {
 	}
 }
 
-//实现io.Reader
+//Read 实现io.Reader
 func (b *ReadBuffer) Read(p []byte) (n int, err error) {
 	size := len(p)
 	if b.length > (b.rdInd + size) {

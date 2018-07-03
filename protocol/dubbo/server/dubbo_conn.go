@@ -10,29 +10,35 @@ import (
 	"sync"
 )
 
+//SndTask is a struct
 type SndTask struct{}
 
+//Svc is a method
 func (this SndTask) Svc(arg interface{}) interface{} {
 	dubboConn := arg.(*DubboConnection)
 	dubboConn.MsgSndLoop()
 	return nil
 }
 
+//RecvTask is a struct
 type RecvTask struct {
 }
 
+//Svc is a method
 func (this RecvTask) Svc(arg interface{}) interface{} {
 	dubboConn := arg.(*DubboConnection)
 	dubboConn.MsgRecvLoop()
 	return nil
 }
 
+//ProcessTask is a struct
 type ProcessTask struct {
 	conn    *DubboConnection
 	req     *dubbo.Request
 	bufBody []byte
 }
 
+//Svc is a method
 func (this ProcessTask) Svc(arg interface{}) interface{} {
 	if this.conn != nil {
 		this.conn.ProcessBody(this.req, this.bufBody)
@@ -40,6 +46,7 @@ func (this ProcessTask) Svc(arg interface{}) interface{} {
 	return nil
 }
 
+//DubboConnection is a struct which has attributes for dubbo connection
 type DubboConnection struct {
 	msgque     *util.MsgQueue
 	remoteAddr string
@@ -50,6 +57,7 @@ type DubboConnection struct {
 	closed     bool
 }
 
+//NewDubboConnetction is a function to create new dubbo connection
 func NewDubboConnetction(conn *net.TCPConn, routineMgr *util.RoutineManager) *DubboConnection {
 	tmp := new(DubboConnection)
 	tmp.conn = conn
@@ -63,11 +71,13 @@ func NewDubboConnetction(conn *net.TCPConn, routineMgr *util.RoutineManager) *Du
 	return tmp
 }
 
+//Open is a function to open a connection
 func (this *DubboConnection) Open() {
 	this.routineMgr.Spawn(SndTask{}, this, fmt.Sprintf("Snd-%s->%s", this.conn.LocalAddr().String(), this.conn.RemoteAddr().String()))
 	this.routineMgr.Spawn(RecvTask{}, this, fmt.Sprintf("Recv-%s->%s", this.conn.LocalAddr().String(), this.conn.RemoteAddr().String()))
 }
 
+//Close is a function to close a connection
 func (this *DubboConnection) Close() {
 	this.mtx.Lock()
 	defer this.mtx.Unlock()
@@ -79,6 +89,7 @@ func (this *DubboConnection) Close() {
 	this.conn.Close()
 }
 
+//MsgRecvLoop is a method receive data
 func (this *DubboConnection) MsgRecvLoop() {
 	//通知处理应答消息
 	for {
@@ -127,6 +138,7 @@ exitloop:
 	this.Close()
 }
 
+//ProcessBody is a method to process the body of response
 func (this *DubboConnection) ProcessBody(req *dubbo.Request, bufBody []byte) {
 	var buffer util.ReadBuffer
 	buffer.SetBuffer(bufBody)
@@ -134,6 +146,7 @@ func (this *DubboConnection) ProcessBody(req *dubbo.Request, bufBody []byte) {
 	this.HandleMsg(req)
 }
 
+//HandleMsg is a method
 func (this *DubboConnection) HandleMsg(req *dubbo.Request) {
 	//这里发送Rest请求以及收发送应答
 	ctx := &dubbo.InvokeContext{req, &dubbo.DubboRsp{}, nil, "", this.remoteAddr}
@@ -164,6 +177,7 @@ func (this *DubboConnection) HandleMsg(req *dubbo.Request) {
 	}
 }
 
+//MsgSndLoop is a method to send data
 func (this *DubboConnection) MsgSndLoop() {
 	for {
 		msg, err := this.msgque.Dequeue()

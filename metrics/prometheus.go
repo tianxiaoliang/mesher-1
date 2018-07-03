@@ -8,6 +8,7 @@ import (
 	"sync"
 )
 
+//PrometheusExporter struct has attributes for prometheus data
 type PrometheusExporter struct {
 	gaugesMutex   sync.RWMutex
 	countersMutex sync.RWMutex
@@ -24,10 +25,12 @@ type PrometheusMesherSinker struct {
 }
 
 var (
+	//DefaultPrometheusExporter stores value of default prometheus exporter type
 	DefaultPrometheusExporter = GetPrometheusExporter()
 	prometheusRegistry        = prometheus.NewRegistry()
 	onceInit                  sync.Once
-	DefaultPrometheusSinker   *PrometheusMesherSinker
+	//DefaultPrometheusSinker stores value of default prometheus exporter type
+	DefaultPrometheusSinker *PrometheusMesherSinker
 )
 
 //GetSystemPrometheusRegistry return prometheus registry which mesher use
@@ -48,6 +51,7 @@ func getPrometheusSinker(pr *prometheus.Registry) *PrometheusMesherSinker {
 	return DefaultPrometheusSinker
 }
 
+//GetPrometheusExporter returns default prometheus exporter
 func GetPrometheusExporter() *PrometheusExporter {
 	//use go chassis registry
 	var promRegistry = metrics.GetSystemPrometheusRegistry()
@@ -64,6 +68,7 @@ func GetPrometheusExporter() *PrometheusExporter {
 	}
 }
 
+//Count function returns count
 func (s *PrometheusExporter) Count(name string, labelNames []string, labels prometheus.Labels) {
 	s.countersMutex.RLock()
 	cv, ok := s.counters[name]
@@ -82,6 +87,7 @@ func (s *PrometheusExporter) Count(name string, labelNames []string, labels prom
 
 }
 
+//Gauge function
 func (s *PrometheusExporter) Gauge(name string, val float64, labelNames []string, labels prometheus.Labels) {
 	defer recoverPanic(name)
 	s.gaugesMutex.RLock()
@@ -100,6 +106,7 @@ func (s *PrometheusExporter) Gauge(name string, val float64, labelNames []string
 	g.With(labels).Set(val)
 }
 
+//Summary function
 func (s *PrometheusExporter) Summary(name string, val float64, labelNames []string, labels prometheus.Labels) {
 	defer recoverPanic(name)
 	s.summaryMutex.RLock()
