@@ -16,3 +16,5 @@
 vendor
 glide.lock
 .idea/
+
+_build
