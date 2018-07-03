@@ -41,9 +41,9 @@ func parseConfigFromCmd(args []string) (err error) {
 			Destination: &Configs.Mode,
 		},
 		cli.StringFlag{
-			Name:        "service-address",
+			Name:        "service-ports",
 			EnvVar:      common.EnvServicePorts,
-			Usage:       fmt.Sprintf("service ip and port,examples: --service-ports=http:3000,grpc:8000"),
+			Usage:       fmt.Sprintf("service protocol and port,examples: --service-ports=http:3000,grpc:8000"),
 			Destination: &Configs.LocalServicePorts,
 		},
 	}
