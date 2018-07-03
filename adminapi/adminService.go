@@ -2,16 +2,17 @@ package adminapi
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/ServiceComb/go-chassis/core/common"
 	"github.com/ServiceComb/go-chassis/core/config/model"
 	"github.com/ServiceComb/go-chassis/core/router"
 	"github.com/ServiceComb/go-chassis/metrics"
-	"github.com/ServiceComb/go-chassis/server/restful"
+	// "github.com/ServiceComb/go-chassis/server/restful"
 	"github.com/emicklei/go-restful"
 	"github.com/go-chassis/mesher/adminapi/health"
 	"github.com/go-chassis/mesher/adminapi/version"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"net/http"
 )
 
 //GetWebService creates route and returns all admin api's

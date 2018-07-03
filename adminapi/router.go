@@ -5,8 +5,7 @@ import (
 	chassisCom "github.com/ServiceComb/go-chassis/core/common"
 	"github.com/ServiceComb/go-chassis/core/lager"
 	chassisTLS "github.com/ServiceComb/go-chassis/core/tls"
-	"github.com/ServiceComb/go-chassis/server/restful"
-	"github.com/emicklei/go-restful"
+	gorestful "github.com/emicklei/go-restful"
 	"github.com/go-chassis/mesher/common"
 	"github.com/go-chassis/mesher/config"
 	"github.com/go-chassis/mesher/metrics"
@@ -51,7 +50,7 @@ func Init() (err error) {
 	go func() {
 		lager.Logger.Infof("admin server listening on %s", ln.Addr().String())
 		restfulWebService := GetWebService()
-		restful.Add(&restfulWebService)
+		gorestful.Add(&restfulWebService)
 		if err := http.Serve(ln, nil); err != nil {
 			errCh <- err
 			return
@@ -71,7 +70,7 @@ func Init() (err error) {
 func getTLSConfig() (*tls.Config, error) {
 	var tlsConfig *tls.Config
 	sslTag := genTag(common.ComponentName, chassisCom.Provider)
-	tmpTLSConfig, sslConfig, err := chassisTLS.getTLSConfigByService(common.ComponentName, "", chassisCom.Provider)
+	tmpTLSConfig, sslConfig, err := chassisTLS.GetTLSConfigByService(common.ComponentName, "", chassisCom.Provider)
 	if err != nil {
 		if !chassisTLS.IsSSLConfigNotExist(err) {
 			return nil, err
