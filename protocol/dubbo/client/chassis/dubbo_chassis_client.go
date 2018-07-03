@@ -28,7 +28,6 @@ type dubboChassisClient struct {
 	reqMutex sync.Mutex
 }
 
-
 //NewDubboChassisClient create new client
 func NewDubboChassisClient(options client.Options) client.ProtocolClient {
 

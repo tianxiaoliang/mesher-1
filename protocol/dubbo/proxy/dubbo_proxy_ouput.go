@@ -28,20 +28,19 @@ import (
 	"github.com/go-chassis/mesher/protocol"
 )
 
-var p *sync.Pool
+//var p *sync.Pool
 var dr = resolver.GetDestinationResolver()
 var sr = resolver.GetSourceResolver()
-
-var ()
 
 const (
 	ProxyTag = "mesherproxy"
 )
 
 var DubboListenAddr string
-var (
-	lock sync.RWMutex
-)
+
+//var (
+//	lock sync.RWMutex
+//)
 
 type ProxyError struct {
 	Message string

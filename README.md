@@ -1,5 +1,7 @@
 # Mesher
 
+[![Build Status](https://travis-ci.org/go-chassis/mesher.svg?branch=master)](https://travis-ci.org/go-chassis/mesher)
+
 A light weight service mesh implementation based on [go chassis](https://github.com/ServiceComb/go-chassis).
 
 

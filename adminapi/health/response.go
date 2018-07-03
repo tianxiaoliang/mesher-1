@@ -1,12 +1,16 @@
 package health
 
+//StatusCode is type of string
 type StatusCode string
 
 const (
-	Red   StatusCode = "red"
+	//Red is a const
+	Red StatusCode = "red"
+	//Green is a const
 	Green StatusCode = "green"
 )
 
+//Health has details about health of a service
 type Health struct {
 	ServiceName                 string     `json:"serviceName,omitempty"`
 	Version                     string     `json:"version,omitempty"`

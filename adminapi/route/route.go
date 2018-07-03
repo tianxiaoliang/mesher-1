@@ -5,6 +5,7 @@ import (
 	"github.com/ServiceComb/go-chassis/core/router"
 )
 
+//Rules is the struct for
 type Rules struct {
 	Destinations map[string][]*model.RouteRule `yaml:"routeRule"`
 }
