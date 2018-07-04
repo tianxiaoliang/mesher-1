@@ -26,6 +26,7 @@ const (
 	JavaSplit   = ";"
 )
 
+//Constants ..
 const (
 	//vod
 	JvmVoid = byte('V')
@@ -72,6 +73,7 @@ const (
 	SchemaPasswd  = "password"
 )
 
+//SchemeTypeMAP is a variable of type map
 var SchemeTypeMAP map[string]string
 
 func init() {
@@ -92,6 +94,8 @@ func init() {
 	SchemeTypeMAP[SchemaTime] = JavaString
 	SchemeTypeMAP[SchemaPasswd] = JavaString
 }
+
+//ArrayToQueryString is a function which converts array to a string
 func ArrayToQueryString(key string, inlst interface{}) string {
 	lst := inlst.([]interface{})
 	var retstr = ""
@@ -106,6 +110,8 @@ func ArrayToQueryString(key string, inlst interface{}) string {
 	}
 	return retstr
 }
+
+//ObjectToString is a method which converts object to string
 func ObjectToString(dtype string, v interface{}) (string, error) {
 	if v == nil {
 		return "", nil
@@ -140,6 +146,8 @@ func ObjectToString(dtype string, v interface{}) (string, error) {
 	}
 	return "", &BaseError{"Unsurported Type"}
 }
+
+//RestBytesToLstValue is a function
 func RestBytesToLstValue(jType string, value [][]byte) (interface{}, error) {
 	var tmp []interface{}
 	var err error
@@ -157,6 +165,7 @@ func RestBytesToLstValue(jType string, value [][]byte) (interface{}, error) {
 	return tmp, nil
 }
 
+//RestByteToValue is a function which converts byte to value type
 func RestByteToValue(jType string, value []byte) (interface{}, error) {
 	switch jType {
 	case JavaString, SchemaString:
@@ -198,6 +207,8 @@ CHARACTER当做string处理
 FLOAT DOUBLE当做DOUBLE
 BYTE  SHORT  INTEGER 当做整形处理
 */
+
+//GetJavaDesc is a function
 func GetJavaDesc(args []Argument) string {
 	tmpDesc := ""
 	for _, tmp := range args {
@@ -206,6 +217,7 @@ func GetJavaDesc(args []Argument) string {
 	return tmpDesc
 }
 
+//TypeDesToArgsObjArry is a function which converts description to array object
 func TypeDesToArgsObjArry(desc string) []Argument {
 	if len(desc) == 0 {
 		return make([]Argument, 1, 1)
@@ -229,22 +241,28 @@ func TypeDesToArgsObjArry(desc string) []Argument {
 	}
 }
 
+//Argument is a struct
 type Argument struct {
 	JavaType string
 	Value    interface{}
 }
 
+//SetJavaType is method which sets javatype
 func (p *Argument) SetJavaType(jType string) {
 	p.JavaType = jType
 }
 
+//GetJavaType is a method which returns javatype
 func (p *Argument) GetJavaType() string {
 	return p.JavaType
 }
+
+//SetValue is a method which sets value
 func (p *Argument) SetValue(value interface{}) {
 	p.Value = value
 }
 
+//GetValue is a method which gets value
 func (p *Argument) GetValue() interface{} {
 	return p.Value
 }

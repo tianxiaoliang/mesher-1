@@ -29,9 +29,12 @@ var dr = resolver.GetDestinationResolver()
 var sr = resolver.GetSourceResolver()
 
 var (
+	//ErrRestFaultAbort is a varible of type error
 	ErrRestFaultAbort = errors.New("injecting abort")
-	ErrRestFault      = errors.New("injecting abort and delay")
-	ErrNilResponse    = errors.New("http response is nil")
+	//ErrRestFault is a varible of type error
+	ErrRestFault = errors.New("injecting abort and delay")
+	//ErrNilResponse is a varible of type error
+	ErrNilResponse = errors.New("http response is nil")
 )
 
 func preHandler(req *http.Request) *invocation.Invocation {
