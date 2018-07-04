@@ -5,18 +5,21 @@ import (
 	"sync"
 )
 
-var G_CurMSGID int64 = 0
+//GCurMSGID is a variable of type int64
+var GCurMSGID int64
 var msgIDMtx = sync.Mutex{}
 
+//GenerateMsgID is a function which generates message ID
 func GenerateMsgID() int64 {
 	msgIDMtx.Lock()
 	defer msgIDMtx.Unlock()
-	G_CurMSGID++
-	return G_CurMSGID
+	GCurMSGID++
+	return GCurMSGID
 }
 
+//Request is a struct
 type Request struct {
-	DubboRpcInvocation
+	DubboRPCInvocation
 	msgID    int64
 	status   byte
 	event    bool
@@ -25,6 +28,7 @@ type Request struct {
 	data     interface{}
 }
 
+//NewDubboRequest is a function which creates new dubbo request
 func NewDubboRequest() *Request {
 	tmp := &Request{}
 	tmp.SetMsgID(GenerateMsgID())
@@ -40,56 +44,70 @@ func NewDubboRequest() *Request {
 	return tmp
 }
 
+//IsBroken check whether the connection is broken
 func (p *Request) IsBroken() bool {
 	return p.isBroken
 }
 
+//SetBroken sets connection as broken
 func (p *Request) SetBroken(broken bool) {
 	p.isBroken = broken
 
 }
 
+//SetEvent sets event to be true
 func (p *Request) SetEvent(event string) {
 	p.event = true
 	p.data = event
 }
 
+//GetMsgID gets message ID
 func (p *Request) GetMsgID() int64 {
 	return p.msgID
 }
 
+//SetMsgID sets message ID
 func (p *Request) SetMsgID(id int64) {
 	p.msgID = id
 }
 
+//GetStatus gets the status
 func (p *Request) GetStatus() byte {
 	return p.status
 }
 
+//IsHeartbeat is method
 func (p *Request) IsHeartbeat() bool {
 	return p.event && HeartBeatEvent == p.data
 }
 
+//IsEvent checks whether event is present
 func (p *Request) IsEvent() bool {
 	return p.event
 }
 
+//SetTwoWay is a method which set the connection to two-way
 func (p *Request) SetTwoWay(is bool) {
 	p.twoWay = is
 }
 
+//IsTwoWay is a method which checks whether it is two-way connection
 func (p *Request) IsTwoWay() bool {
 	return p.twoWay
 }
 
+//SetData is a method which sets data
 func (p *Request) SetData(data interface{}) {
 	p.data = data
 }
+
+//GetData is a method which gets data
 func (p *Request) GetData() interface{} {
 	return p.data
 }
 
-type DubboRpcInvocation struct {
+//DubboRPCInvocation is a struct
+type DubboRPCInvocation struct {
 	methodName  string
 	mVersion    string
 	arguments   []util.Argument
@@ -97,11 +115,13 @@ type DubboRpcInvocation struct {
 	urlPath     string
 }
 
-func (p *DubboRpcInvocation) SetVersion(ver string) {
+//SetVersion is a method which sets version
+func (p *DubboRPCInvocation) SetVersion(ver string) {
 	p.mVersion = ver
 }
 
-func (p *DubboRpcInvocation) GetAttachment(key string, defaultValue string) string {
+//GetAttachment is a method which gets particular attachment
+func (p *DubboRPCInvocation) GetAttachment(key string, defaultValue string) string {
 	if _, ok := p.attachments[key]; ok {
 		return p.attachments[key]
 	} else {
@@ -109,19 +129,23 @@ func (p *DubboRpcInvocation) GetAttachment(key string, defaultValue string) stri
 	}
 }
 
-func (p *DubboRpcInvocation) GetAttachments() map[string]string {
+//GetAttachments which gets all attachments
+func (p *DubboRPCInvocation) GetAttachments() map[string]string {
 	return p.attachments
 }
 
-func (p *DubboRpcInvocation) GetMethodName() string {
+//GetMethodName is a method which will get method name
+func (p *DubboRPCInvocation) GetMethodName() string {
 	return p.methodName
 }
 
-func (p *DubboRpcInvocation) SetMethodName(name string) {
+//SetMethodName is a method which sets method name
+func (p *DubboRPCInvocation) SetMethodName(name string) {
 	p.methodName = name
 }
 
-func (p *DubboRpcInvocation) SetAttachment(key string, value string) {
+//SetAttachment is a method which sets attachment
+func (p *DubboRPCInvocation) SetAttachment(key string, value string) {
 	if p.attachments == nil {
 		p.attachments = make(map[string]string)
 	}
@@ -132,14 +156,17 @@ func (p *DubboRpcInvocation) SetAttachment(key string, value string) {
 	}
 }
 
-func (p *DubboRpcInvocation) SetAttachments(attachs map[string]string) {
+//SetAttachments is a method which sets multiple attachment
+func (p *DubboRPCInvocation) SetAttachments(attachs map[string]string) {
 	p.attachments = attachs
 }
 
-func (p *DubboRpcInvocation) GetArguments() []util.Argument {
+//GetArguments is a method which gets arguments
+func (p *DubboRPCInvocation) GetArguments() []util.Argument {
 	return p.arguments
 }
 
-func (p *DubboRpcInvocation) SetArguments(agrs []util.Argument) {
+//SetArguments is a method which sets arguments
+func (p *DubboRPCInvocation) SetArguments(agrs []util.Argument) {
 	p.arguments = agrs
 }

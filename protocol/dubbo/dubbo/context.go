@@ -5,6 +5,7 @@ import (
 	//	"github.com/servicecomb/go-chassis/core/invocation"
 )
 
+//InvokeContext is a struct which has attributes for invoke context
 type InvokeContext struct {
 	Req        *Request
 	Rsp        *DubboRsp

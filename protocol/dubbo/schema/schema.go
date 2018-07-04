@@ -14,6 +14,7 @@ const (
 	InBody  = 1
 )
 
+//InterfaceSchema is a struct
 type InterfaceSchema struct {
 	SvcName      string
 	JavaClsName  string
@@ -24,6 +25,7 @@ type InterfaceSchema struct {
 	methordArray []DefMethod
 }
 
+//DefMethod is a struct
 type DefMethod struct {
 	ownerSvc string
 	Path     string //  样例: /test/StringArray 需要是包含basepath的URL
@@ -33,6 +35,7 @@ type DefMethod struct {
 	Responds map[string]*MethRespond //key 为返回码 200 ,404...
 }
 
+//GetRspSchema is a method to get response schema
 func (this *DefMethod) GetRspSchema(status int) *MethRespond {
 	strStatus := fmt.Sprintf("%d", status)
 	if _, ok := this.Responds[strStatus]; ok {
@@ -42,6 +45,7 @@ func (this *DefMethod) GetRspSchema(status int) *MethRespond {
 	}
 }
 
+//GetParamNameAndWhere is a method to get parameter name
 func (this *DefMethod) GetParamNameAndWhere(indx int) (string, int) {
 	for _, v := range this.Paras {
 		if v.Indx == indx {
@@ -56,6 +60,7 @@ func (this *DefMethod) GetParamNameAndWhere(indx int) (string, int) {
 	return "", InQuery
 }
 
+//GetParamSchema is a method to get parameter schema
 func (this *DefMethod) GetParamSchema(indx int) *MethParam {
 	for _, v := range this.Paras {
 		if v.Indx == indx {
@@ -65,12 +70,14 @@ func (this *DefMethod) GetParamSchema(indx int) *MethParam {
 	return nil
 }
 
+//MethRespond is a struct
 type MethRespond struct {
 	Status string // 200 404...
 	DType  string
 	ObjRef DefType
 }
 
+//MethParam is a struct
 type MethParam struct {
 	Name            string            //参数名称
 	Dtype           string            //参数类型
@@ -82,7 +89,7 @@ type MethParam struct {
 	ObjRef          DefType
 }
 
-//契约definitions字段里定义的类型定义
+//DefType 契约definitions字段里定义的类型定义
 type DefType struct {
 	typeName   string
 	dType      string
@@ -90,11 +97,13 @@ type DefType struct {
 	fileds     map[string]DefField
 }
 
+//DefField is a struct
 type DefField struct {
 	dType   string
 	formate string
 }
 
+//GetDefTypeFromDef is a function to get defintion type
 func GetDefTypeFromDef(defs map[string]registry.Definition, ref string) DefType {
 	def := DefType{}
 	names := strings.Split(ref, "/")
@@ -105,6 +114,8 @@ func GetDefTypeFromDef(defs map[string]registry.Definition, ref string) DefType 
 	}
 	return def
 }
+
+//CovertSwaggerMethordToLocalMethord is a function to convert swagger method to local method
 func CovertSwaggerMethordToLocalMethord(schema *registry.SchemaContent, src *registry.MethodInfo, dst *DefMethod) {
 	dst.OperaID = src.OperationID
 	tmpParas := make([]MethParam, len(src.Parameters))
@@ -148,6 +159,7 @@ func CovertSwaggerMethordToLocalMethord(schema *registry.SchemaContent, src *reg
 	dst.Responds = tmpRsps
 }
 
+//GetSvcByInterface is a function to get service by interface name
 func GetSvcByInterface(interfaceName string) *registry.MicroService {
 	value, ok := svcToInterfaceCache.Get(interfaceName)
 	if !ok || value == nil {
@@ -171,6 +183,7 @@ func GetSvcByInterface(interfaceName string) *registry.MicroService {
 	return nil
 }
 
+//GetSupportProto is a function to get supported protocol
 func GetSupportProto(svc *registry.MicroService) string {
 	if svc == nil {
 		return ""
@@ -198,6 +211,7 @@ func GetSupportProto(svc *registry.MicroService) string {
 	return proto
 }
 
+//GetSvcNameByInterface is a function to get service name by interface
 func GetSvcNameByInterface(interfaceName string) string {
 	svc := registry.DefaultContractDiscoveryService.GetMicroServicesByInterface(interfaceName)
 	for _, v := range svc {
@@ -206,6 +220,7 @@ func GetSvcNameByInterface(interfaceName string) string {
 	return ""
 }
 
+//GetMethodByInterface is a function to get method from interface name
 func GetMethodByInterface(interfaceName string, operateID string) *DefMethod {
 	var meth DefMethod
 
@@ -224,7 +239,8 @@ func GetMethodByInterface(interfaceName string, operateID string) *DefMethod {
 	return nil
 }
 
-func GetSchemaMethodBySvcUrl(svcName string, env string, ver string, app string, verb string, url string) (*registry.SchemaContent, *DefMethod) {
+//GetSchemaMethodBySvcURL is a function to get schema method from URl
+func GetSchemaMethodBySvcURL(svcName string, env string, ver string, app string, verb string, url string) (*registry.SchemaContent, *DefMethod) {
 	schemas := registry.DefaultContractDiscoveryService.GetSchemaContentByServiceName(svcName, ver, app, env)
 	var curMethrod *DefMethod
 	var curSchema *registry.SchemaContent
@@ -244,10 +260,11 @@ func GetSchemaMethodBySvcUrl(svcName string, env string, ver string, app string,
 	return curSchema, curMethrod
 }
 
+//GetMethodInfoSchemaByURL is a function to get method info schema from URl
 func GetMethodInfoSchemaByURL(schema *registry.SchemaContent, verb string, url string) *DefMethod {
 	var curMax = 0
 	basePath := schema.BasePath
-	var method *registry.MethodInfo = nil
+	var method *registry.MethodInfo
 	var path string
 	for key, v := range schema.Paths {
 		if strings.HasPrefix(url, basePath+key) {

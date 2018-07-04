@@ -1,4 +1,4 @@
-package simgleRegistry
+package simpleregistry
 
 import (
 	"github.com/ServiceComb/go-chassis/core/lager"
@@ -24,7 +24,7 @@ func newServer(opts server.Options) server.ProtocolServer {
 	}
 }
 
-//-----------------------SimDubboRegistry server---------------------------
+//SimDubboRegistryServer is a struct
 type SimDubboRegistryServer struct {
 	opts       server.Options
 	mux        sync.RWMutex
@@ -36,19 +36,23 @@ func (d *SimDubboRegistryServer) String() string {
 	return NAME
 }
 
+//Init is a method which initialized server config
 func (d *SimDubboRegistryServer) Init(opts ...server.Options) error {
 	lager.Logger.Info("Dubbo Simple Registry server init.")
 	return nil
 }
 
+//Register is a method to register schema to that server
 func (d *SimDubboRegistryServer) Register(schema interface{}, options ...server.RegisterOption) (string, error) {
 	return "", nil
 }
 
+//Stop is a method to stop the server
 func (d *SimDubboRegistryServer) Stop() error {
 	return nil
 }
 
+//Start is a method to start the server
 func (d *SimDubboRegistryServer) Start() error {
 	d.Init()
 	host, _, err := net.SplitHostPort(d.opts.Address)
@@ -73,6 +77,7 @@ func (d *SimDubboRegistryServer) Start() error {
 	return nil
 }
 
+//AcceptLoop is a method to receive data in loop
 func (d *SimDubboRegistryServer) AcceptLoop(l *net.TCPListener) {
 	for {
 		for {
@@ -110,6 +115,7 @@ func handleConn(conn net.Conn) {
 	}
 }
 
+//SendVoidRespond is a method to send void respose
 func SendVoidRespond(conn net.Conn, req *dubbo.Request) {
 	var rsp dubbo.DubboRsp
 	var wBuf util.WriteBuffer

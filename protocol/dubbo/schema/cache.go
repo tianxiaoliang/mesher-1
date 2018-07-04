@@ -14,8 +14,9 @@ import (
 var (
 	svcToInterfaceCache *cache.Cache
 	protoCache          *cache.Cache
-
-	DefaultInterval   = 30 * time.Second
+	//DefaultInterval is default refresh interval time
+	DefaultInterval = 30 * time.Second
+	//DefaultExpireTime is default expire time
 	DefaultExpireTime = 0 * time.Second
 
 	refresher *refreshTicker
@@ -74,16 +75,21 @@ func newRefresher(t time.Duration) *refreshTicker {
 type refreshTicker struct {
 	jobs Queue
 }
+
+//Queue is a struct
 type Queue struct {
 	tick time.Duration
 	cond *sync.Cond
 	q    []Job
 }
 
+//Job is a struct
 type Job struct {
 	Fn   JobFunc
 	Next time.Time
 }
+
+//JobFunc is a type of func()
 type JobFunc func()
 
 func (tc *refreshTicker) Add(job Job) { tc.jobs.Push(job) }
@@ -105,6 +111,7 @@ func (tc *refreshTicker) run() {
 	}
 }
 
+//Push is a method to add new job
 func (q *Queue) Push(x Job) {
 	q.cond.L.Lock()
 	defer q.cond.L.Unlock()
@@ -113,6 +120,7 @@ func (q *Queue) Push(x Job) {
 	q.cond.Signal()
 }
 
+//Top is a method to get then latest job
 func (q *Queue) Top() Job {
 	q.cond.L.Lock()
 	defer q.cond.L.Unlock()
@@ -123,6 +131,7 @@ func (q *Queue) Top() Job {
 	return q.q[0]
 }
 
+//Pop is a method to get next job
 func (q *Queue) Pop() Job {
 	q.cond.L.Lock()
 	defer q.cond.L.Unlock()

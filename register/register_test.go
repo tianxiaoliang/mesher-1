@@ -29,15 +29,15 @@ func TestAdaptEndpoints(t *testing.T) {
 	AdaptEndpoints()
 	assert.Nil(t, registry.InstanceEndpoints)
 
-	protoMap[common.HttpProtocol] = model.Protocol{
+	protoMap[common.HTTPProtocol] = model.Protocol{
 		Advertise: "1.1.1.1:8081",
 	}
 	delete(protoMap, chassisCommon.ProtocolRest)
 	AdaptEndpoints()
 	assert.Equal(t, 1, len(registry.InstanceEndpoints))
-	_, ok := registry.InstanceEndpoints[common.HttpProtocol]
+	_, ok := registry.InstanceEndpoints[common.HTTPProtocol]
 	assert.False(t, ok)
 	endpoint0 := registry.InstanceEndpoints[chassisCommon.ProtocolRest]
-	endpoint1 := protoMap[common.HttpProtocol].Advertise
+	endpoint1 := protoMap[common.HTTPProtocol].Advertise
 	assert.Equal(t, endpoint0, endpoint1)
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/go-chassis/mesher/config"
 )
 
+//EqualPolicy is a function
 func EqualPolicy(inv *invocation.Invocation, p *config.Policy) bool {
 	if inv.MicroServiceName != p.Destination {
 		return false

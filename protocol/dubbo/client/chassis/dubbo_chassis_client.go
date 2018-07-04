@@ -16,6 +16,7 @@ import (
 	"github.com/ServiceComb/go-chassis/core/lager"
 )
 
+//Name is a constant
 const Name = "dubbo"
 
 func init() {

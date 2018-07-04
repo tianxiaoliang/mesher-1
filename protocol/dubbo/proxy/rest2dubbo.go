@@ -23,6 +23,7 @@ import (
 	"github.com/go-chassis/mesher/protocol"
 )
 
+//ConvertDubboRspToRestRsp is a function which converts dubbo response to rest response
 func ConvertDubboRspToRestRsp(dubboRsp *dubbo.DubboRsp, w http.ResponseWriter, ctx *dubbo.InvokeContext) error {
 	status := dubboRsp.GetStatus()
 	if status == dubbo.Ok {
@@ -44,7 +45,8 @@ func ConvertDubboRspToRestRsp(dubboRsp *dubbo.DubboRsp, w http.ResponseWriter, c
 	return nil
 }
 
-func ConvertHttpReqToDubboReq(restReq *http.Request, ctx *dubbo.InvokeContext, inv *invocation.Invocation) error {
+//ConvertHTTPReqToDubboReq is a function which converts http request in to dubbo request
+func ConvertHTTPReqToDubboReq(restReq *http.Request, ctx *dubbo.InvokeContext, inv *invocation.Invocation) error {
 	req := ctx.Req
 	uri := restReq.URL
 	i := 0
@@ -52,7 +54,7 @@ func ConvertHttpReqToDubboReq(restReq *http.Request, ctx *dubbo.InvokeContext, i
 	queryAgrs := uri.Query()
 	arg := &util.Argument{}
 
-	svcSchema, methd := schema.GetSchemaMethodBySvcUrl(inv.MicroServiceName, "", inv.Version, inv.AppID,
+	svcSchema, methd := schema.GetSchemaMethodBySvcURL(inv.MicroServiceName, "", inv.Version, inv.AppID,
 		strings.ToLower(restReq.Method), string(restReq.URL.String()))
 	if methd == nil {
 		return &util.BaseError{"Method not been found"}
@@ -142,10 +144,11 @@ func preHandleToDubbo(req *http.Request) (*invocation.Invocation, string) {
 	return inv, source
 }
 
+//TransparentForwardHandler is a function
 func TransparentForwardHandler(w http.ResponseWriter, r *http.Request) {
 	inv, _ := preHandleToDubbo(r)
 	dubboCtx := &dubbo.InvokeContext{dubbo.NewDubboRequest(), &dubbo.DubboRsp{}, nil, "", ""}
-	err := ConvertHttpReqToDubboReq(r, dubboCtx, inv)
+	err := ConvertHTTPReqToDubboReq(r, dubboCtx, inv)
 	if err != nil {
 		lager.Logger.Error("Invalid Request :", err)
 		w.WriteHeader(http.StatusInternalServerError)

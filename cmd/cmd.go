@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	chassiscommon "github.com/ServiceComb/go-chassis/core/common"
 	"github.com/go-chassis/mesher/common"
@@ -11,6 +10,7 @@ import (
 	"strings"
 )
 
+//Local is a constant
 const Local = "127.0.0.1"
 
 //ConfigFromCmd store cmd params
@@ -21,6 +21,7 @@ type ConfigFromCmd struct {
 	PortsMap          map[string]string
 }
 
+//Configs is a pointer of struct ConfigFromCmd
 var Configs *ConfigFromCmd
 
 // parseConfigFromCmd
@@ -55,11 +56,13 @@ func parseConfigFromCmd(args []string) (err error) {
 	return
 }
 
+//Init get config and parses those command
 func Init() error {
 	Configs = &ConfigFromCmd{}
 	return parseConfigFromCmd(os.Args)
 }
 
+//GeneratePortsMap generates ports map
 func (c *ConfigFromCmd) GeneratePortsMap() error {
 	c.PortsMap = make(map[string]string)
 	if c.LocalServicePorts != "" { //parse service ports
@@ -67,7 +70,7 @@ func (c *ConfigFromCmd) GeneratePortsMap() error {
 		for _, v := range s {
 			p := strings.Split(v, ":")
 			if len(p) != 2 {
-				return errors.New(fmt.Sprintf("[%s] is invalid", p))
+				return fmt.Errorf("[%s] is invalid", p)
 			}
 			c.PortsMap[p[0]] = Local + ":" + p[1]
 		}
@@ -80,7 +83,7 @@ func (c *ConfigFromCmd) GeneratePortsMap() error {
 		log.Printf("%s is deprecated, plz use SERVICE_PORTS=http:8080,grpc:90000 instead", common.EnvSpecificAddr)
 		s := strings.Split(addr, ":")
 		if len(s) != 2 {
-			return errors.New(fmt.Sprintf("[%s] is invalid", addr))
+			return fmt.Errorf("[%s] is invalid", addr)
 		}
 		c.PortsMap[chassiscommon.ProtocolRest] = Local + ":" + s[1]
 	}

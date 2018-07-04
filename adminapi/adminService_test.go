@@ -224,7 +224,7 @@ func TestInit2(t *testing.T) {
 	assert := assert.New(t)
 	mesherConfig := new(mesherconfig.MesherConfig)
 	yaml.Unmarshal([]byte(mesherConf), mesherConfig)
-	mesherConfig.Admin.ServerUri = "INVALID"
+	mesherConfig.Admin.ServerURI = "INVALID"
 	mesherconfig.SetConfig(mesherConfig)
 	err := Init()
 	assert.NotNil(err)

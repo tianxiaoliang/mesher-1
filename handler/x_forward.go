@@ -6,11 +6,14 @@ import (
 	"github.com/ServiceComb/go-chassis/core/invocation"
 )
 
+//XForward is a costant
 const XForward = "x-forward"
 
+//XForwardHandler ..
 type XForwardHandler struct {
 }
 
+//Handle function
 func (h *XForwardHandler) Handle(chain *handler.Chain, inv *invocation.Invocation, cb invocation.ResponseCallBack) {
 	orgReq, ok := inv.Args.(*rest.Request)
 	if ok && orgReq.Req.Header["X-Forwarded-Host"] == nil {
@@ -22,7 +25,10 @@ func (h *XForwardHandler) Handle(chain *handler.Chain, inv *invocation.Invocatio
 	})
 }
 
+//Name returns name
 func (h *XForwardHandler) Name() string { return XForward }
-func NewHandler() handler.Handler       { return &XForwardHandler{} }
+
+//NewHandler creates new handler and returns it
+func NewHandler() handler.Handler { return &XForwardHandler{} }
 
 func init() { handler.RegisterHandler(XForward, NewHandler) }

@@ -16,7 +16,7 @@ func AdaptEndpoints() {
 	// To be called by services based on CSE SDK,
 	// mesher has to register endpoint with rest://ip:port
 	oldProtoMap := config.GlobalDefinition.Cse.Protocols
-	if _, ok := oldProtoMap[common.HttpProtocol]; !ok {
+	if _, ok := oldProtoMap[common.HTTPProtocol]; !ok {
 		return
 	}
 	if _, ok := oldProtoMap[chassisCommon.ProtocolRest]; ok {
@@ -25,12 +25,12 @@ func AdaptEndpoints() {
 
 	newProtoMap := make(map[string]chassisModel.Protocol)
 	for n, proto := range oldProtoMap {
-		if n == common.HttpProtocol {
+		if n == common.HTTPProtocol {
 			continue
 		}
 		newProtoMap[n] = proto
 	}
-	newProtoMap[chassisCommon.ProtocolRest] = oldProtoMap[common.HttpProtocol]
+	newProtoMap[chassisCommon.ProtocolRest] = oldProtoMap[common.HTTPProtocol]
 	registry.InstanceEndpoints = registry.MakeEndpointMap(newProtoMap)
 	for protocol, address := range registry.InstanceEndpoints {
 		if address == "" {

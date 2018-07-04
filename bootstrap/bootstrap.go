@@ -47,12 +47,14 @@ func Start() error {
 
 }
 
+//DecideMode get config mode
 func DecideMode() error {
 	config.Mode = cmd.Configs.Mode
 	lager.Logger.Info("Running as "+config.Mode, nil)
 	return nil
 }
 
+//RegisterFramework registers framework
 func RegisterFramework() {
 	if framework := metadata.NewFramework(); cmd.Configs.Mode == common.ModeSidecar {
 		version := GetVersion()
@@ -64,12 +66,13 @@ func RegisterFramework() {
 	}
 }
 
+//GetVersion returns version
 func GetVersion() string {
-	versionId := version.Ver().Version
-	if len(versionId) == 0 {
+	versionID := version.Ver().Version
+	if len(versionID) == 0 {
 		return version.DefaultVersion
 	}
-	return versionId
+	return versionID
 }
 
 //SetHandlers leverage go-chassis API to set default handlers if there is no define in chassis.yaml

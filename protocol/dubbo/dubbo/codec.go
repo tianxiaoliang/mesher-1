@@ -4,6 +4,7 @@ import (
 	"github.com/go-chassis/mesher/protocol/dubbo/utils"
 )
 
+//Constants for request and response attributes
 const (
 	HeaderLength      = 16
 	Magic             = 0xdabb
@@ -16,6 +17,7 @@ const (
 	HeartBeatEvent    = ""
 )
 
+//Constants for dubbo attributes
 const (
 	DubboVersionKey    string = "dubbo"
 	DubboVersion       string = "2.0.0"
@@ -27,6 +29,7 @@ const (
 	SemicolonSeparator string = ";"
 )
 
+//Constants
 const (
 	Success              = 0
 	NeedMore             = -1
@@ -39,20 +42,23 @@ const (
 	Hessian2 = byte(2)
 )
 
+//DubboCodec is a struct
 type DubboCodec struct {
 }
 
-func (p *DubboCodec) GetContentTypeId() byte {
+//GetContentTypeID is a method which returns content type id
+func (p *DubboCodec) GetContentTypeID() byte {
 	return Hessian2
 }
 
+//EncodeDubboRsp is a method which encodes dubbo response
 func (p *DubboCodec) EncodeDubboRsp(rsp *DubboRsp, buffer *util.WriteBuffer) int {
 	// set Magic number.
 	header := make([]byte, HeaderLength)
 	// set Magic number.
 	util.Short2bytes(Magic, header, 0)
 	// set request and serialization flag.
-	header[2] = p.GetContentTypeId()
+	header[2] = p.GetContentTypeID()
 	if rsp.IsHeartbeat() {
 		header[2] |= FlagEvent
 	}
@@ -102,6 +108,7 @@ func (p *DubboCodec) EncodeDubboRsp(rsp *DubboRsp, buffer *util.WriteBuffer) int
 	return 0
 }
 
+//DecodeDubboRsqHead is a method which decodes dubbo response header
 func (p *DubboCodec) DecodeDubboRsqHead(rsp *DubboRsp, header []byte, bodyLen *int) int {
 
 	if header[0] != MagicHigh || header[1] != MagicLow {
@@ -111,7 +118,7 @@ func (p *DubboCodec) DecodeDubboRsqHead(rsp *DubboRsp, header []byte, bodyLen *i
 	var id int64 = util.Bytes2long(header, 4)
 	rsp.SetID(id)
 
-	var flag byte = header[2]
+	var flag = header[2]
 	if (flag & FlagEvent) != 0 {
 		rsp.SetEvent(true)
 	}
@@ -127,7 +134,7 @@ func (p *DubboCodec) DecodeDubboRsqHead(rsp *DubboRsp, header []byte, bodyLen *i
 	return Success
 }
 
-//解码应答
+//DecodeDubboRspBody is a method which decodes dubbo response body
 func (p *DubboCodec) DecodeDubboRspBody(buffer *util.ReadBuffer, rsp *DubboRsp) int {
 	var obj interface{}
 	var err error
@@ -196,12 +203,13 @@ func (p *DubboCodec) DecodeDubboRspBody(buffer *util.ReadBuffer, rsp *DubboRsp) 
 	return 0
 }
 
+//EncodeDubboReq is a method which encodes dubbo request
 func (p *DubboCodec) EncodeDubboReq(req *Request, buffer *util.WriteBuffer) int {
 	// set Magic number.
 	header := make([]byte, HeaderLength)
 	util.Short2bytes(Magic, header, 0)
 	// set request and serialization flag.
-	header[2] = (byte)(FlagRequest | p.GetContentTypeId())
+	header[2] = (byte)(FlagRequest | p.GetContentTypeID())
 	if req.IsHeartbeat() {
 		header[2] |= FlagEvent
 	}
@@ -255,6 +263,7 @@ func (p *DubboCodec) EncodeDubboReq(req *Request, buffer *util.WriteBuffer) int 
 	return 0
 }
 
+//DecodeDubboReqBodyForRegstry is a method which decodes dubbo request body from registry
 func (p *DubboCodec) DecodeDubboReqBodyForRegstry(req *Request, bodyBuf *util.ReadBuffer) int {
 	var obj interface{}
 	var err error
@@ -318,6 +327,7 @@ func (p *DubboCodec) DecodeDubboReqBodyForRegstry(req *Request, bodyBuf *util.Re
 	return 0
 }
 
+//DecodeDubboReqBody is a method which decodes dobbo request body
 func (p *DubboCodec) DecodeDubboReqBody(req *Request, bodyBuf *util.ReadBuffer) int {
 	var obj interface{}
 	var err error
@@ -377,7 +387,7 @@ func (p *DubboCodec) DecodeDubboReqBody(req *Request, bodyBuf *util.ReadBuffer) 
 	return 0
 }
 
-//编码应答
+//DecodeDubboReqHead is a method which decodes dubbo request header
 func (p *DubboCodec) DecodeDubboReqHead(req *Request, header []byte, bodyLen *int) int {
 	if len(header) < HeaderLength {
 		return NeedMore
