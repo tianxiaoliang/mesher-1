@@ -11,7 +11,7 @@ const (
 	Deactived    = 1
 )
 
-// thread safe queue
+//MsgQueue thread safe queue
 type MsgQueue struct {
 	msgList      *list.List
 	mtx          *sync.Mutex
@@ -22,6 +22,7 @@ type MsgQueue struct {
 	notFullCond  *sync.Cond
 }
 
+//NewMsgQueue is a function which initializes msgqueue value
 func NewMsgQueue() *MsgQueue {
 	tmp := new(MsgQueue)
 	tmp.msgList = list.New()
@@ -34,6 +35,7 @@ func NewMsgQueue() *MsgQueue {
 	return tmp
 }
 
+//Enqueue is method which enqueues message in queue
 func (this *MsgQueue) Enqueue(msg interface{}) error {
 	this.mtx.Lock()
 	defer this.mtx.Unlock()
@@ -49,6 +51,7 @@ func (this *MsgQueue) Enqueue(msg interface{}) error {
 	return nil
 }
 
+//Dequeue is a method which dequeues message from queue
 func (this *MsgQueue) Dequeue() (interface{}, error) {
 	this.mtx.Lock()
 	defer this.mtx.Unlock()
@@ -64,6 +67,7 @@ func (this *MsgQueue) Dequeue() (interface{}, error) {
 	return v, nil
 }
 
+//isEmpty is a method which checks whether queue is empty
 func (this *MsgQueue) isEmpty() bool {
 	if this.msgCount == 0 {
 		return true
@@ -72,6 +76,7 @@ func (this *MsgQueue) isEmpty() bool {
 	}
 }
 
+//isFull is a method which checks whether queue is full
 func (this *MsgQueue) isFull() bool {
 	if this.msgCount >= this.maxMsgNum {
 		return true
@@ -80,6 +85,7 @@ func (this *MsgQueue) isFull() bool {
 	}
 }
 
+//waitNotFullCond is a method which waits if queue is full
 func (this *MsgQueue) waitNotFullCond() int {
 	var result = 0
 
@@ -93,12 +99,14 @@ func (this *MsgQueue) waitNotFullCond() int {
 	return result
 }
 
+//Deavtive is a method
 func (this *MsgQueue) Deavtive() {
 	this.state = Deactived
 	this.notEmptyCond.Broadcast()
 	this.notFullCond.Broadcast()
 }
 
+//waitNotEmptyCond is a method
 func (this *MsgQueue) waitNotEmptyCond() int {
 	var result = 0
 

@@ -21,6 +21,7 @@ import (
 	"github.com/ServiceComb/go-chassis/core/util/string"
 	"github.com/ServiceComb/go-chassis/third_party/forked/afex/hystrix-go/hystrix"
 	"github.com/go-chassis/mesher/protocol"
+	"net/url"
 )
 
 //ConvertDubboRspToRestRsp is a function which converts dubbo response to rest response
@@ -68,6 +69,7 @@ func ConvertHTTPReqToDubboReq(restReq *http.Request, ctx *dubbo.InvokeContext, i
 
 	//处理参数
 	dubboArgs = make([]util.Argument, len(methd.Paras))
+
 	for _, v := range methd.Paras {
 		var byteTmp []byte
 		var bytesTmp [][]byte
@@ -81,32 +83,7 @@ func ConvertHTTPReqToDubboReq(restReq *http.Request, ctx *dubbo.InvokeContext, i
 			return &util.BaseError{"Param is null"}
 		}
 		var realJvmType string
-		if _, ok := util.SchemeTypeMAP[v.Dtype]; ok {
-			arg.JavaType = util.SchemeTypeMAP[v.Dtype]
-			if v.Dtype == util.SchemaArray {
-				realJvmType = util.JavaList
-				if v.Items != nil {
-					if val, ok := v.Items["x-java-class"]; ok {
-						realJvmType = fmt.Sprintf("L%s;", val)
-					}
-					if valType, ok := v.Items["type"]; ok {
-						realJvmType = fmt.Sprintf("L%s;", valType)
-					}
-				}
-				bytesTmp = util.S2ByteSlice(queryAgrs[v.Name])
-			} else if arg.JavaType == util.JavaObject {
-				realJvmType = fmt.Sprintf("L%s;", v.ObjRef.JvmClsName)
-				if v.AdditionalProps != nil { //处理map
-					if val, ok := v.AdditionalProps["x-java-class"]; ok {
-						realJvmType = fmt.Sprintf("L%s;", val)
-					} else {
-						realJvmType = util.JavaMap
-					}
-				}
-			}
-			//Lcom.alibaba.dubbo.demo.user; need convert to  Lcom/alibaba/dubbo/demo/User;
-			realJvmType = strings.Replace(realJvmType, ".", "/", -1)
-		}
+		bytesTmp, realJvmType = getJVMType(v, arg, bytesTmp, restReq.URL)
 		if bytesTmp == nil {
 			arg.Value, err = util.RestByteToValue(arg.JavaType, byteTmp)
 			if err != nil {
@@ -129,6 +106,38 @@ func ConvertHTTPReqToDubboReq(restReq *http.Request, ctx *dubbo.InvokeContext, i
 	req.SetArguments(dubboArgs)
 
 	return nil
+}
+
+func getJVMType(v schema.MethParam, arg *util.Argument, bytesTmp [][]byte, queryAgrs *url.URL) ([][]byte, string) {
+	var realJvmType string
+	queryAgrsTmp := queryAgrs.Query()
+	if _, ok := util.SchemeTypeMAP[v.Dtype]; ok {
+		arg.JavaType = util.SchemeTypeMAP[v.Dtype]
+		if v.Dtype == util.SchemaArray {
+			realJvmType = util.JavaList
+			if v.Items != nil {
+				if val, ok := v.Items["x-java-class"]; ok {
+					realJvmType = fmt.Sprintf("L%s;", val)
+				}
+				if valType, ok := v.Items["type"]; ok {
+					realJvmType = fmt.Sprintf("L%s;", valType)
+				}
+			}
+			bytesTmp = util.S2ByteSlice(queryAgrsTmp[v.Name])
+		} else if arg.JavaType == util.JavaObject {
+			realJvmType = fmt.Sprintf("L%s;", v.ObjRef.JvmClsName)
+			if v.AdditionalProps != nil { //处理map
+				if val, ok := v.AdditionalProps["x-java-class"]; ok {
+					realJvmType = fmt.Sprintf("L%s;", val)
+				} else {
+					realJvmType = util.JavaMap
+				}
+			}
+		}
+		//Lcom.alibaba.dubbo.demo.user; need convert to  Lcom/alibaba/dubbo/demo/User;
+		realJvmType = strings.Replace(realJvmType, ".", "/", -1)
+	}
+	return bytesTmp, realJvmType
 }
 
 func preHandleToDubbo(req *http.Request) (*invocation.Invocation, string) {
