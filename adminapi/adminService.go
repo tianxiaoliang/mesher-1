@@ -21,7 +21,7 @@ func GetWebService() restful.WebService {
 	restfulWebService.Route(restfulWebService.GET("/v1/mesher/version").To(GetVersion))
 	restfulWebService.Route(restfulWebService.GET("/v1/mesher/metrics").To(GetMetrics))
 	restfulWebService.Route(restfulWebService.GET("/v1/mesher/routeRule").To(RouteRule))
-	restfulWebService.Route(restfulWebService.GET("/v1/mesher/routeRule/:serviceName").To(RouteRuleByService))
+	restfulWebService.Route(restfulWebService.GET("/v1/mesher/routeRule/{serviceName}").To(RouteRuleByService))
 	restfulWebService.Route(restfulWebService.GET("/v1/mesher/health").To(MesherHealth))
 	return *restfulWebService
 }
@@ -47,7 +47,7 @@ func RouteRule(req *restful.Request, resp *restful.Response) {
 
 //RouteRuleByService returns route config for particular service
 func RouteRuleByService(req *restful.Request, resp *restful.Response) {
-	serviceName := req.Request.URL.Query().Get(":serviceName")
+	serviceName := req.PathParameter("serviceName")
 	routeRule := router.DefaultRouter.FetchRouteRuleByServiceName(serviceName)
 	if routeRule == nil {
 		resp.WriteHeaderAndJson(http.StatusNotFound, fmt.Sprintf("%s routeRule not found", serviceName), common.JSON)
