@@ -1,6 +1,6 @@
 # Mesher
 
-[![Build Status](https://travis-ci.org/go-chassis/mesher.svg?branch=master)](https://travis-ci.org/go-chassis/mesher)
+[![Build Status](https://travis-ci.org/go-chassis/mesher.svg?branch=master)](https://travis-ci.org/go-chassis/mesher) [![Go Report Card](https://goreportcard.com/badge/github.com/go-chassis/mesher)](https://goreportcard.com/report/github.com/go-chassis/mesher) [![GoDoc](https://godoc.org/github.com/go-chassis/mesher?status.svg)](https://godoc.org/github.com/go-chassis/mesher) [![HitCount](http://hits.dwyl.io/go-chassis/mesher.svg)](http://hits.dwyl.io/go-chassis/mesher)
 
 A service mesh implementation based on [go chassis](https://github.com/ServiceComb/go-chassis).
 
