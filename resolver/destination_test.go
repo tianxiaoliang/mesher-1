@@ -6,12 +6,12 @@ import (
 	"github.com/ServiceComb/go-chassis/core/archaius"
 	cConfig "github.com/ServiceComb/go-chassis/core/config"
 	"github.com/ServiceComb/go-chassis/core/lager"
-	"github.com/ServiceComb/go-chassis/util/fileutil"
+	"github.com/ServiceComb/go-chassis/pkg/util/fileutil"
 	"github.com/go-chassis/mesher/cmd"
 	"github.com/go-chassis/mesher/config"
+	"net/http"
 	"os"
 	"path/filepath"
-	"net/http"
 )
 
 func TestInit(t *testing.T) {

@@ -16,6 +16,7 @@ import (
 	"github.com/ServiceComb/go-chassis/core/lager"
 	"github.com/ServiceComb/go-chassis/core/loadbalancer"
 	"github.com/ServiceComb/go-chassis/core/util/string"
+	"github.com/ServiceComb/go-chassis/pkg/runtime"
 	"github.com/ServiceComb/go-chassis/third_party/forked/afex/hystrix-go/hystrix"
 	"github.com/go-chassis/mesher/common"
 	"github.com/go-chassis/mesher/metrics"
@@ -49,7 +50,7 @@ func preHandler(req *http.Request) *invocation.Invocation {
 
 func consumerPreHandler(req *http.Request) *invocation.Invocation {
 	inv := preHandler(req)
-	inv.SourceServiceID = chassisconfig.SelfServiceID
+	inv.SourceServiceID = runtime.ServiceID
 	inv.SourceMicroService = chassisconfig.SelfServiceName
 	req.Header.Set(chassisCommon.HeaderSourceName, inv.SourceMicroService)
 	return inv

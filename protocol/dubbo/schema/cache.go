@@ -5,10 +5,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ServiceComb/go-chassis/core/config"
 	"github.com/ServiceComb/go-chassis/core/lager"
 	"github.com/ServiceComb/go-chassis/core/registry"
-	cache "github.com/patrickmn/go-cache"
+	"github.com/ServiceComb/go-chassis/pkg/runtime"
+	"github.com/patrickmn/go-cache"
 )
 
 var (
@@ -43,7 +43,7 @@ func newInterfaceJob(interfaceName string) Job {
 
 func newProtoJob(serviceID string) Job {
 	return Job{Fn: func() {
-		ins, err := registry.DefaultServiceDiscoveryService.GetMicroServiceInstances(config.SelfServiceID, serviceID)
+		ins, err := registry.DefaultServiceDiscoveryService.GetMicroServiceInstances(runtime.ServiceID, serviceID)
 		if err == nil {
 			proto := protoForService(ins)
 			lager.Logger.Infof("refresh cache proto %s for serviceID %s", proto, serviceID)

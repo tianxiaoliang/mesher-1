@@ -6,7 +6,7 @@ import (
 	"github.com/ServiceComb/go-chassis/core/config/model"
 	"github.com/ServiceComb/go-chassis/core/lager"
 	"github.com/ServiceComb/go-chassis/core/server"
-	"github.com/ServiceComb/go-chassis/util/fileutil"
+	"github.com/ServiceComb/go-chassis/pkg/util/fileutil"
 	"github.com/go-chassis/mesher/cmd"
 	"github.com/go-chassis/mesher/common"
 	"gopkg.in/yaml.v2"
