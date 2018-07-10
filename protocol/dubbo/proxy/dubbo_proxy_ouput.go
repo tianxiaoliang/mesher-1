@@ -23,6 +23,7 @@ import (
 	"github.com/ServiceComb/go-chassis/core/lager"
 	"github.com/ServiceComb/go-chassis/core/loadbalancer"
 	"github.com/ServiceComb/go-chassis/core/util/string"
+	"github.com/ServiceComb/go-chassis/pkg/runtime"
 	"github.com/ServiceComb/go-chassis/third_party/forked/afex/hystrix-go/hystrix"
 	"github.com/go-chassis/mesher/protocol"
 )
@@ -154,7 +155,7 @@ func Handle(ctx *dubbo.InvokeContext) error {
 	}
 
 	inv := new(invocation.Invocation)
-	inv.SourceServiceID = chassisconfig.SelfServiceID
+	inv.SourceServiceID = runtime.ServiceID
 	inv.SourceMicroService = ctx.Req.GetAttachment(common.HeaderSourceName, "")
 	inv.Args = ctx.Req
 
@@ -250,7 +251,7 @@ func preHandleToRest(ctx *dubbo.InvokeContext) (*rest.Request, *invocation.Invoc
 		return nil, nil, ""
 	}
 	inv := new(invocation.Invocation)
-	inv.SourceServiceID = chassisconfig.SelfServiceID
+	inv.SourceServiceID = runtime.ServiceID
 	inv.Args = restReq
 	inv.Protocol = "rest"
 	inv.Reply = rest.NewResponse()

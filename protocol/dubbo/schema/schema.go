@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ServiceComb/go-chassis/core/config"
 	"github.com/ServiceComb/go-chassis/core/lager"
 	"github.com/ServiceComb/go-chassis/core/registry"
+	"github.com/ServiceComb/go-chassis/pkg/runtime"
 )
 
 const (
@@ -192,7 +192,7 @@ func GetSupportProto(svc *registry.MicroService) string {
 	value, ok := protoCache.Get(svc.ServiceID)
 	if !ok || value == nil {
 		lager.Logger.Infof("Get proto from remote, serviceID: %s", svc.ServiceID)
-		ins, err := registry.DefaultServiceDiscoveryService.GetMicroServiceInstances(config.SelfServiceID, svc.ServiceID)
+		ins, err := registry.DefaultServiceDiscoveryService.GetMicroServiceInstances(runtime.ServiceID, svc.ServiceID)
 		if err != nil {
 			return proto
 		}
