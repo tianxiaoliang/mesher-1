@@ -1,7 +1,7 @@
 ---
 writers: file,stdout
 # LoggerLevel: |DEBUG|INFO|WARN|ERROR|FATAL
-logger_level: INFO
+logger_level: DEBUG
 
 # LoggerFile: used to output the name of log
 logger_file: log/mesher.log

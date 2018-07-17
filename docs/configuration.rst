@@ -8,4 +8,4 @@ User guides
    configurations/cli
    configurations/profiling
    configurations/admin
-
+   configurations/health
