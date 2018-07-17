@@ -23,10 +23,9 @@ import (
 	"sync"
 	"time"
 
-	mesherconfig "github.com/go-chassis/mesher/config"
-
 	"github.com/ServiceComb/go-chassis/core/config"
 	"github.com/ServiceComb/go-chassis/core/invocation"
+	mesherconfig "github.com/go-chassis/mesher/config"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
@@ -70,7 +69,7 @@ func Init() {
 func RecordResponse(inv *invocation.Invocation, statusCode int) {
 	mutex.Lock()
 	defer mutex.Unlock()
-	serviceLabelValues := map[string]string{ServiceName: inv.MicroServiceName, AppID: inv.AppID, Version: inv.Version}
+	serviceLabelValues := map[string]string{ServiceName: inv.MicroServiceName, AppID: inv.RouteTags.AppID(), Version: inv.RouteTags.Version()}
 	if statusCode >= http.StatusBadRequest && statusCode <= http.StatusUnavailableForLegalReasons {
 		DefaultPrometheusExporter.Count(Error4XX, LabelNames, serviceLabelValues)
 		DefaultPrometheusExporter.Count(TotalFailures, LabelNames, serviceLabelValues)

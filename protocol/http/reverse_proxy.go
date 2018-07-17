@@ -19,11 +19,12 @@ package http
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 	"sync"
+	"time"
 
-	"errors"
 	"github.com/ServiceComb/go-chassis/client/rest"
 	chassisCommon "github.com/ServiceComb/go-chassis/core/common"
 	chassisconfig "github.com/ServiceComb/go-chassis/core/config"
@@ -34,12 +35,12 @@ import (
 	"github.com/ServiceComb/go-chassis/core/loadbalancer"
 	"github.com/ServiceComb/go-chassis/core/util/string"
 	"github.com/ServiceComb/go-chassis/pkg/runtime"
+	"github.com/ServiceComb/go-chassis/pkg/util/tags"
 	"github.com/ServiceComb/go-chassis/third_party/forked/afex/hystrix-go/hystrix"
 	"github.com/go-chassis/mesher/common"
 	"github.com/go-chassis/mesher/metrics"
 	"github.com/go-chassis/mesher/protocol"
 	"github.com/go-chassis/mesher/resolver"
-	"time"
 )
 
 var p *sync.Pool
@@ -76,8 +77,7 @@ func consumerPreHandler(req *http.Request) *invocation.Invocation {
 func providerPreHandler(req *http.Request) *invocation.Invocation {
 	inv := preHandler(req)
 	inv.MicroServiceName = chassisconfig.SelfServiceName
-	inv.Version = chassisconfig.SelfVersion
-	inv.AppID = chassisconfig.GlobalDefinition.AppID
+	inv.RouteTags = utiltags.NewDefaultTag(chassisconfig.SelfVersion, chassisconfig.GlobalDefinition.AppID)
 	inv.SourceMicroService = req.Header.Get(chassisCommon.HeaderSourceName)
 	return inv
 }
@@ -107,7 +107,7 @@ func LocalRequestHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer func(begin time.Time) {
 		timeTaken := time.Since(begin).Seconds()
-		serviceLabelValues := map[string]string{metrics.ServiceName: inv.MicroServiceName, metrics.AppID: inv.AppID, metrics.Version: inv.Version}
+		serviceLabelValues := map[string]string{metrics.ServiceName: inv.MicroServiceName, metrics.AppID: inv.RouteTags.AppID(), metrics.Version: inv.RouteTags.Version()}
 		metrics.DefaultPrometheusExporter.Summary(metrics.RequestLatencySeconds, timeTaken, metrics.LabelNames, serviceLabelValues)
 	}(time.Now())
 	var invRsp *invocation.Response

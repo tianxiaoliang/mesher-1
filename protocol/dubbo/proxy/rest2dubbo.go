@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strings"
 
 	mesherCommon "github.com/go-chassis/mesher/common"
@@ -36,9 +37,9 @@ import (
 	"github.com/ServiceComb/go-chassis/core/lager"
 	"github.com/ServiceComb/go-chassis/core/loadbalancer"
 	"github.com/ServiceComb/go-chassis/core/util/string"
+	"github.com/ServiceComb/go-chassis/pkg/util/tags"
 	"github.com/ServiceComb/go-chassis/third_party/forked/afex/hystrix-go/hystrix"
 	"github.com/go-chassis/mesher/protocol"
-	"net/url"
 )
 
 //ConvertDubboRspToRestRsp is a function which converts dubbo response to rest response
@@ -72,7 +73,7 @@ func ConvertHTTPReqToDubboReq(restReq *http.Request, ctx *dubbo.InvokeContext, i
 	queryAgrs := uri.Query()
 	arg := &util.Argument{}
 
-	svcSchema, methd := schema.GetSchemaMethodBySvcURL(inv.MicroServiceName, "", inv.Version, inv.AppID,
+	svcSchema, methd := schema.GetSchemaMethodBySvcURL(inv.MicroServiceName, "", inv.RouteTags.Version(), inv.RouteTags.AppID(),
 		strings.ToLower(restReq.Method), string(restReq.URL.String()))
 	if methd == nil {
 		return &util.BaseError{"Method not been found"}
@@ -160,8 +161,7 @@ func getJVMType(v schema.MethParam, arg *util.Argument, bytesTmp [][]byte, query
 func preHandleToDubbo(req *http.Request) (*invocation.Invocation, string) {
 	inv := new(invocation.Invocation)
 	inv.MicroServiceName = chassisconfig.SelfServiceName
-	inv.Version = chassisconfig.SelfVersion
-	inv.AppID = chassisconfig.GlobalDefinition.AppID
+	inv.RouteTags = utiltags.NewDefaultTag(chassisconfig.SelfVersion, chassisconfig.GlobalDefinition.AppID)
 
 	inv.Protocol = "dubbo"
 	inv.URLPathFormat = req.URL.Path
