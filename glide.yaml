@@ -2,14 +2,54 @@ package: github.com/go-chassis/mesher
 import:
 - package: github.com/ServiceComb/cse-collector
 - package: github.com/ServiceComb/go-cc-client
+  subpackages:
+  - configcenter-client
 - package: github.com/ServiceComb/go-chassis
   version: master
+  subpackages:
+  - client/rest
+  - config-center
+  - core/archaius
+  - core/client
+  - core/common
+  - core/config
+  - core/config/model
+  - core/fault
+  - core/handler
+  - core/invocation
+  - core/lager
+  - core/loadbalancer
+  - core/metadata
+  - core/registry
+  - core/router
+  - core/server
+  - core/tls
+  - core/util/string
+  - metrics
+  - pkg/runtime
+  - pkg/util
+  - pkg/util/fileutil
+  - pkg/util/iputil
+  - third_party/forked/afex/hystrix-go/hystrix
 - package: github.com/ServiceComb/go-sc-client
+  subpackages:
+  - model
+- package: github.com/ServiceComb/http-client
 - package: github.com/emicklei/go-restful
 - package: github.com/go-chassis/gohessian
-  version: e5130c25af5563a0d87f7b2d60f08cd932d8cf6e
 - package: github.com/patrickmn/go-cache
 - package: github.com/prometheus/client_golang
+  subpackages:
+  - prometheus
+  - prometheus/promhttp
 - package: github.com/stretchr/testify
+  subpackages:
+  - mock
 - package: github.com/urfave/cli
 - package: gopkg.in/yaml.v2
+  repo: https://github.com/go-yaml/yaml
+- package: k8s.io/apimachinery
+  version: 241e268dc8e07223510442ab7d7902695c585d80
+  repo: https://github.com/kubernetes/apimachinery
+  subpackages:
+  - pkg/util/sets

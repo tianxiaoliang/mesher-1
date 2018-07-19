@@ -19,5 +19,6 @@ mesher --config=mesher.yaml --service-ports=rest:8080
 **--service-ports**
 >*(optional, string)* running as sidecar, mesher need to know local service ports, 
 this is to tell mesher service port list, 
-if service has multiple protocol, you can write like rest:8080,grpc:9000. 
-default is empty, mesher can not call your local service
+The value format is {protocol}-{suffix} or {protocol}
+if service has multiple protocol, you can separate with comma "rest-admin:8080,grpc:9000". 
+default is empty, in that case mesher can not call your local service.
