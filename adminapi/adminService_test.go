@@ -188,41 +188,6 @@ func TestAdminService_RouteRule(t *testing.T) {
 	t.Log("Response : ", rr.Body.String())
 	t.Log("Response Status Code : ", rr.Code)
 	ast.Equal(rr.Code, http.StatusOK)
-
-	t.Log("testing /v1/mesher/routeRule/{serviceName} admin api of mesher when given service route rule is present")
-	req, err = http.NewRequest(http.MethodGet, "http://localhost:8080/v1/mesher/routeRule/ShoppingCart", nil)
-	require.Nil(t, err)
-	query := req.URL.Query()
-	query.Add(":serviceName", "ShoppingCart")
-	req.URL.RawQuery = query.Encode()
-	rr = httptest.NewRecorder()
-	testRouterMock.On("FetchRouteRuleByServiceName", "ShoppingCart").Return(mesherConfig.Destinations["ShoppingCart"])
-
-	restfulRequest = restful.NewRequest(req)
-	restfulResponse = restful.NewResponse(rr)
-	RouteRuleByService(restfulRequest, restfulResponse)
-
-	t.Log("Response : ", rr.Body.String())
-	t.Log("Response Status Code : ", rr.Code)
-	ast.Equal(rr.Code, http.StatusOK)
-
-	t.Log("testing /v1/mesher/routeRule/{serviceName} admin api of mesher when given service route rule is not present")
-
-	req, err = http.NewRequest(http.MethodGet, "http://localhost:8080/v1/mesher/routeRule/Invalid", nil)
-	require.Nil(t, err)
-	query = req.URL.Query()
-	query.Add(":serviceName", "Invalid")
-	req.URL.RawQuery = query.Encode()
-	rr = httptest.NewRecorder()
-	testRouterMock.On("FetchRouteRuleByServiceName", "Invalid").Return(nil)
-
-	restfulRequest = restful.NewRequest(req)
-	restfulResponse = restful.NewResponse(rr)
-	RouteRuleByService(restfulRequest, restfulResponse)
-
-	t.Log("Response : ", rr.Body.String())
-	t.Log("Response Status Code : ", rr.Code)
-	ast.Equal(rr.Code, http.StatusNotFound)
 }
 
 func TestInit(t *testing.T) {
