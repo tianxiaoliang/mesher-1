@@ -19,6 +19,7 @@ package mock
 
 import (
 	"github.com/ServiceComb/go-chassis/core/config/model"
+	"github.com/ServiceComb/go-chassis/core/router"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -28,7 +29,7 @@ type RouterMock struct {
 }
 
 //Init ..
-func (m *RouterMock) Init() error {
+func (m *RouterMock) Init(router.Options) error {
 	return nil
 }
 
@@ -39,6 +40,9 @@ func (m *RouterMock) SetRouteRule(map[string][]*model.RouteRule) {}
 func (m *RouterMock) FetchRouteRule() map[string][]*model.RouteRule {
 	return nil
 }
+
+//InitRouteRuleByKey ..
+func (m *RouterMock) InitRouteRuleByKey(k string) {}
 
 //FetchRouteRuleByServiceName ..
 func (m *RouterMock) FetchRouteRuleByServiceName(s string) []*model.RouteRule {

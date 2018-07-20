@@ -33,7 +33,7 @@ func EqualPolicy(inv *invocation.Invocation, p *config.Policy) bool {
 			if v == "" {
 				v = common.DefaultApp
 			}
-			if v != inv.AppID {
+			if v != inv.RouteTags.AppID() {
 				return false
 			}
 			continue
@@ -42,7 +42,7 @@ func EqualPolicy(inv *invocation.Invocation, p *config.Policy) bool {
 			if v == "" {
 				v = common.DefaultVersion
 			}
-			if v != inv.Version {
+			if v != inv.RouteTags.Version() {
 				return false
 			}
 			continue

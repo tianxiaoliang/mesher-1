@@ -38,3 +38,9 @@ jobs:
         - go get github.com/Masterminds/glide
         - glide install
         - go build
+    - stage: Unit Test
+      script:
+        - go get github.com/Masterminds/glide
+        - glide install
+        - bash -x scripts/travis/unit_test.sh
+

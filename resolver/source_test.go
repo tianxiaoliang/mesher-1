@@ -29,6 +29,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"runtime"
 	"testing"
+	"github.com/patrickmn/go-cache"
 )
 
 func TestDefaultSourceResolver_Resolve(t *testing.T) {
@@ -45,6 +46,7 @@ func TestDefaultSourceResolver_Resolve(t *testing.T) {
 	var nilMS *model.MicroService = nil
 	sourceIp := "1.2.3.4"
 	sourceIP2 := "1.1.1.1"
+	registry.IPIndexedCache = cache.New(0,0)
 	registry.IPIndexedCache.Set(sourceIp, ms, 0)
 	registry.IPIndexedCache.Set(sourceIP2, nilMS, 0)
 
