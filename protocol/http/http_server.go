@@ -178,7 +178,7 @@ func (hs *httpServer) listenAndServe(addr string, t *tls.Config, h http.Handler)
 			Handler: h,
 		}
 		if err := hs.server.Serve(ln); err != nil {
-			server.ServerErr <- err
+			server.ErrRuntime <- err
 			return
 		}
 	}()
