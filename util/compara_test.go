@@ -18,8 +18,8 @@
 package util_test
 
 import (
-	"github.com/ServiceComb/go-chassis/core/invocation"
-	"github.com/ServiceComb/go-chassis/pkg/util/tags"
+	"github.com/go-chassis/go-chassis/core/invocation"
+	"github.com/go-chassis/go-chassis/pkg/util/tags"
 	"github.com/go-chassis/mesher/config"
 	"testing"
 	"github.com/go-chassis/mesher/util"

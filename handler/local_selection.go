@@ -19,8 +19,8 @@ package handler
 
 import (
 	"fmt"
-	"github.com/ServiceComb/go-chassis/core/handler"
-	"github.com/ServiceComb/go-chassis/core/invocation"
+	"github.com/go-chassis/go-chassis/core/handler"
+	"github.com/go-chassis/go-chassis/core/invocation"
 	"github.com/go-chassis/mesher/cmd"
 	"github.com/go-chassis/mesher/common"
 )

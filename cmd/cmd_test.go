@@ -18,7 +18,7 @@
 package cmd_test
 
 import (
-	"github.com/ServiceComb/go-chassis/core/lager"
+	"github.com/go-chassis/go-chassis/core/lager"
 	"github.com/go-chassis/mesher/cmd"
 	"github.com/go-chassis/mesher/common"
 	"github.com/stretchr/testify/assert"

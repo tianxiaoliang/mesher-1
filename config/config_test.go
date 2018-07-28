@@ -1,10 +1,10 @@
 package config_test
 
 import (
-//	"github.com/ServiceComb/go-chassis/core/archaius"
-//	cConfig "github.com/ServiceComb/go-chassis/core/config"
-//	"github.com/ServiceComb/go-chassis/core/lager"
-//	"github.com/ServiceComb/go-chassis/pkg/util/fileutil"
+//	"github.com/go-chassis/go-chassis/core/archaius"
+//	cConfig "github.com/go-chassis/go-chassis/core/config"
+//	"github.com/go-chassis/go-chassis/core/lager"
+//	"github.com/go-chassis/go-chassis/pkg/util/fileutil"
 	"github.com/go-chassis/mesher/cmd"
 	"github.com/go-chassis/mesher/config"
 	"github.com/stretchr/testify/assert"

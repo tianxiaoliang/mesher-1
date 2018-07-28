@@ -23,8 +23,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ServiceComb/go-chassis/core/config"
-	"github.com/ServiceComb/go-chassis/core/invocation"
+	"github.com/go-chassis/go-chassis/core/config"
+	"github.com/go-chassis/go-chassis/core/invocation"
 	mesherconfig "github.com/go-chassis/mesher/config"
 	"github.com/prometheus/client_golang/prometheus"
 )

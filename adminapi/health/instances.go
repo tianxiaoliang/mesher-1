@@ -23,11 +23,11 @@ import (
 
 	ver "github.com/go-chassis/mesher/adminapi/version"
 
-	metricsink "github.com/ServiceComb/cse-collector"
-	"github.com/ServiceComb/go-cc-client/configcenter-client"
-	"github.com/ServiceComb/go-chassis/core/config"
-	"github.com/ServiceComb/go-chassis/core/lager"
-	"github.com/ServiceComb/go-chassis/core/registry"
+	"github.com/go-chassis/go-cc-client/configcenter-client"
+	"github.com/go-chassis/go-chassis/core/config"
+	"github.com/go-chassis/go-chassis/core/lager"
+	"github.com/go-chassis/go-chassis/core/registry"
+	//	metricsink "github.com/huaweicse/cse-collector"
 )
 
 //GetMesherHealth returns health
@@ -38,8 +38,8 @@ func GetMesherHealth() *Health {
 		Version:     version,
 		Status:      Green,
 		ConnectedConfigCenterClient: isConfigCenterConnected(),
-		ConnectedMonitoring:         isMornitorServerConnected(),
-		Error:                       "",
+		//		ConnectedMonitoring:         isMornitorServerConnected(),
+		Error: "",
 	}
 	if err != nil {
 		lager.Logger.Error("health check failed", err)
@@ -97,6 +97,6 @@ func isConfigCenterConnected() bool {
 	return true
 }
 
-func isMornitorServerConnected() bool {
-	return metricsink.IsMonitoringConnected
-}
+//func isMornitorServerConnected() bool {
+//	return metricsink.IsMonitoringConnected
+//}

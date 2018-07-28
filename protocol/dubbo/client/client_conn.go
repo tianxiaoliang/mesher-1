@@ -19,7 +19,7 @@ package dubboclient
 
 import (
 	"fmt"
-	"github.com/ServiceComb/go-chassis/core/lager"
+	"github.com/go-chassis/go-chassis/core/lager"
 	"github.com/go-chassis/mesher/protocol/dubbo/dubbo"
 	"github.com/go-chassis/mesher/protocol/dubbo/utils"
 	"net"

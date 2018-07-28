@@ -19,13 +19,13 @@ package adminapi
 
 import (
 	"errors"
-	"github.com/ServiceComb/go-chassis/core/config"
-	"github.com/ServiceComb/go-chassis/core/config/model"
-	"github.com/ServiceComb/go-chassis/core/lager"
-	"github.com/ServiceComb/go-chassis/core/registry"
-	"github.com/ServiceComb/go-chassis/core/registry/mock"
-	"github.com/ServiceComb/go-chassis/core/router"
-	_ "github.com/ServiceComb/go-chassis/core/router/cse"
+	"github.com/go-chassis/go-chassis/core/config"
+	"github.com/go-chassis/go-chassis/core/config/model"
+	"github.com/go-chassis/go-chassis/core/lager"
+	"github.com/go-chassis/go-chassis/core/registry"
+	"github.com/go-chassis/go-chassis/core/registry/mock"
+	"github.com/go-chassis/go-chassis/core/router"
+	_ "github.com/go-chassis/go-chassis/core/router/cse"
 	"github.com/emicklei/go-restful"
 	routerMock "github.com/go-chassis/mesher/adminapi/route/mock"
 	ver "github.com/go-chassis/mesher/adminapi/version"
@@ -36,7 +36,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	//"github.com/ServiceComb/go-chassis/server/restful"
+	//"github.com/go-chassis/go-chassis/server/restful"
 )
 
 var globalConfig = `

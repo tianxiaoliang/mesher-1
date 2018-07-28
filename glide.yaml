@@ -1,10 +1,10 @@
 package: github.com/go-chassis/mesher
 import:
-- package: github.com/ServiceComb/cse-collector
-- package: github.com/ServiceComb/go-cc-client
+- package: github.com/huaweicse/cse-collector
+- package: github.com/go-chassis/go-cc-client
   subpackages:
   - configcenter-client
-- package: github.com/ServiceComb/go-chassis
+- package: github.com/go-chassis/go-chassis
   version: master
   subpackages:
   - client/rest
@@ -31,10 +31,10 @@ import:
   - pkg/util/fileutil
   - pkg/util/iputil
   - third_party/forked/afex/hystrix-go/hystrix
-- package: github.com/ServiceComb/go-sc-client
+- package: github.com/go-chassis/go-sc-client
   subpackages:
   - model
-- package: github.com/ServiceComb/http-client
+- package: github.com/go-chassis/http-client
 - package: github.com/emicklei/go-restful
 - package: github.com/go-chassis/gohessian
 - package: github.com/patrickmn/go-cache

@@ -19,7 +19,7 @@ package cmd
 
 import (
 	"fmt"
-	chassiscommon "github.com/ServiceComb/go-chassis/core/common"
+	chassiscommon "github.com/go-chassis/go-chassis/core/common"
 	"github.com/go-chassis/mesher/common"
 	"github.com/urfave/cli"
 	"log"

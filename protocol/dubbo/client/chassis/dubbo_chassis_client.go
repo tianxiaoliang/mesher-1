@@ -28,9 +28,9 @@ import (
 	"github.com/go-chassis/mesher/protocol/dubbo/proxy"
 	"github.com/go-chassis/mesher/protocol/dubbo/utils"
 
-	"github.com/ServiceComb/go-chassis/core/client"
-	"github.com/ServiceComb/go-chassis/core/invocation"
-	"github.com/ServiceComb/go-chassis/core/lager"
+	"github.com/go-chassis/go-chassis/core/client"
+	"github.com/go-chassis/go-chassis/core/invocation"
+	"github.com/go-chassis/go-chassis/core/lager"
 )
 
 //Name is a constant

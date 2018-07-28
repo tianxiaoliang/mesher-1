@@ -31,12 +31,12 @@ import (
 	dubboproxy "github.com/go-chassis/mesher/protocol/dubbo/proxy"
 	"github.com/go-chassis/mesher/resolver"
 
-	chassisCom "github.com/ServiceComb/go-chassis/core/common"
-	chassisConfig "github.com/ServiceComb/go-chassis/core/config"
-	"github.com/ServiceComb/go-chassis/core/invocation"
-	"github.com/ServiceComb/go-chassis/core/lager"
-	"github.com/ServiceComb/go-chassis/core/server"
-	chassisTLS "github.com/ServiceComb/go-chassis/core/tls"
+	chassisCom "github.com/go-chassis/go-chassis/core/common"
+	chassisConfig "github.com/go-chassis/go-chassis/core/config"
+	"github.com/go-chassis/go-chassis/core/invocation"
+	"github.com/go-chassis/go-chassis/core/lager"
+	"github.com/go-chassis/go-chassis/core/server"
+	chassisTLS "github.com/go-chassis/go-chassis/core/tls"
 )
 
 const (

@@ -22,8 +22,8 @@ import (
 	"log"
 	"net/url"
 
-	"github.com/ServiceComb/go-chassis/core/lager"
-	"github.com/ServiceComb/go-chassis/core/util/string"
+	"github.com/go-chassis/go-chassis/core/lager"
+	"github.com/go-chassis/go-chassis/core/util/string"
 	"github.com/go-chassis/mesher/config"
 )
 
