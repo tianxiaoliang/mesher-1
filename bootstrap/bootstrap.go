@@ -30,10 +30,10 @@ import (
 	"github.com/go-chassis/mesher/register"
 	"github.com/go-chassis/mesher/resolver"
 
-	"github.com/ServiceComb/go-chassis"
-	chassisHandler "github.com/ServiceComb/go-chassis/core/handler"
-	"github.com/ServiceComb/go-chassis/core/lager"
-	"github.com/ServiceComb/go-chassis/core/metadata"
+	"github.com/go-chassis/go-chassis"
+	chassisHandler "github.com/go-chassis/go-chassis/core/handler"
+	"github.com/go-chassis/go-chassis/core/lager"
+	"github.com/go-chassis/go-chassis/core/metadata"
 )
 
 // Start initialize configs and components

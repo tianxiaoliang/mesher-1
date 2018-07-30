@@ -19,10 +19,10 @@ package adminapi
 
 import (
 	"crypto/tls"
-	chassisCom "github.com/ServiceComb/go-chassis/core/common"
-	"github.com/ServiceComb/go-chassis/core/lager"
-	chassisTLS "github.com/ServiceComb/go-chassis/core/tls"
 	gorestful "github.com/emicklei/go-restful"
+	chassisCom "github.com/go-chassis/go-chassis/core/common"
+	"github.com/go-chassis/go-chassis/core/lager"
+	chassisTLS "github.com/go-chassis/go-chassis/core/tls"
 	"github.com/go-chassis/mesher/common"
 	"github.com/go-chassis/mesher/config"
 	"github.com/go-chassis/mesher/metrics"

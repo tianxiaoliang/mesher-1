@@ -4,7 +4,7 @@
 
 1. Install ServiceComb [service-center](https://github.com/ServiceComb/service-center/releases)
 
-2. Install go-chassis and run [rest server](https://github.com/ServiceComb/go-chassis/tree/master/examples/rest/server)
+2. Install go-chassis and run [rest server](https://github.com/go-chassis/go-chassis/tree/master/examples/rest/server)
 
 3. Build mesher.go
 

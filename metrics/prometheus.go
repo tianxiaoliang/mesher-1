@@ -18,8 +18,8 @@
 package metrics
 
 import (
-	"github.com/ServiceComb/go-chassis/core/lager"
-	"github.com/ServiceComb/go-chassis/metrics"
+	"github.com/go-chassis/go-chassis/core/lager"
+	"github.com/go-chassis/go-chassis/metrics"
 	"github.com/prometheus/client_golang/prometheus"
 	"runtime"
 	"sync"

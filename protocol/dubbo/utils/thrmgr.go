@@ -18,7 +18,7 @@
 package util
 
 import (
-	"github.com/ServiceComb/go-chassis/core/lager"
+	"github.com/go-chassis/go-chassis/core/lager"
 	"sync"
 )
 

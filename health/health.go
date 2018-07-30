@@ -2,10 +2,10 @@ package health
 
 import (
 	"errors"
-	"github.com/ServiceComb/go-chassis/core/lager"
-	"github.com/ServiceComb/go-chassis/core/registry"
-	"github.com/ServiceComb/go-chassis/pkg/runtime"
-	"github.com/ServiceComb/go-chassis/pkg/util"
+	"github.com/go-chassis/go-chassis/core/lager"
+	"github.com/go-chassis/go-chassis/core/registry"
+	"github.com/go-chassis/go-chassis/pkg/runtime"
+	"github.com/go-chassis/go-chassis/pkg/util"
 	"github.com/go-chassis/mesher/cmd"
 	"github.com/go-chassis/mesher/config"
 	"net"

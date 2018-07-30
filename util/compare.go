@@ -18,7 +18,7 @@
 package util
 
 import (
-	"github.com/ServiceComb/go-chassis/core/invocation"
+	"github.com/go-chassis/go-chassis/core/invocation"
 	"github.com/go-chassis/mesher/common"
 	"github.com/go-chassis/mesher/config"
 )

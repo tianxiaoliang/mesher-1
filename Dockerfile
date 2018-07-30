@@ -1,4 +1,4 @@
-FROM 10.93.185.233:5000/frolvlad/alpine-glibc:latest
+FROM frolvlad/alpine-glibc:latest
 RUN mkdir -p /opt/mesher && \
     mkdir -p /etc/mesher/conf && \
     mkdir -p /etc/ssl/meshercert/ && \

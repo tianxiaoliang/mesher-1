@@ -18,8 +18,8 @@
 package simpleregistry
 
 import (
-	"github.com/ServiceComb/go-chassis/core/lager"
-	"github.com/ServiceComb/go-chassis/core/server"
+	"github.com/go-chassis/go-chassis/core/lager"
+	"github.com/go-chassis/go-chassis/core/server"
 	"github.com/go-chassis/mesher/protocol/dubbo/dubbo"
 	"github.com/go-chassis/mesher/protocol/dubbo/utils"
 	"net"

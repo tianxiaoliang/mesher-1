@@ -22,13 +22,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ServiceComb/go-chassis/core/config"
-	"github.com/ServiceComb/go-chassis/core/invocation"
+	"github.com/go-chassis/go-chassis/core/config"
+	"github.com/go-chassis/go-chassis/core/invocation"
 	"github.com/prometheus/client_golang/prometheus"
 	dto "github.com/prometheus/client_model/go"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/ServiceComb/go-chassis/core/config/model"
+	"github.com/go-chassis/go-chassis/core/config/model"
 )
 
 var (

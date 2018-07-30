@@ -1,10 +1,9 @@
 package main
 
 import (
-	_ "github.com/ServiceComb/cse-collector"            // use cse monitoring
-	"github.com/ServiceComb/go-chassis"                 //Use go chassis EE
-	_ "github.com/ServiceComb/go-chassis/config-center" //use config center
-	"github.com/ServiceComb/go-chassis/core/lager"
+	"github.com/go-chassis/go-chassis"                 //Use go chassis EE
+	_ "github.com/go-chassis/go-chassis/config-center" //use config center
+	"github.com/go-chassis/go-chassis/core/lager"
 	"github.com/go-chassis/mesher/adminapi/version"
 	"github.com/go-chassis/mesher/bootstrap"
 	"github.com/go-chassis/mesher/cmd"
