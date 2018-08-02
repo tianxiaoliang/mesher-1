@@ -30,7 +30,6 @@ if [ $CHECKOUT_VERSION == "latest" ]; then
 else
     git checkout $CHECKOUT_VERSION
 fi
-
 glide install
 go build -o mesher -a
 
@@ -66,5 +65,8 @@ chmod +x start.sh mesher
 pkg_name="mesher-$VERSION-linux-amd64.tar.gz"
 
 tar zcvf $pkg_name licenses conf mesher VERSION
+if [ $JOB_NAME != "" ]; then
+    cp $release_dir/$pkg_name /var/lib/jenkins/mesher-release
+fi
 tar zcvf $WORK_DIR/mesher.tar.gz licenses conf start.sh mesher VERSION
 exit 0
