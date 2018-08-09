@@ -71,6 +71,7 @@ func consumerPreHandler(req *http.Request) *invocation.Invocation {
 	inv.SourceServiceID = runtime.ServiceID
 	inv.SourceMicroService = chassisconfig.SelfServiceName
 	req.Header.Set(chassisCommon.HeaderSourceName, inv.SourceMicroService)
+	inv.Ctx = context.TODO()
 	return inv
 }
 
@@ -79,6 +80,7 @@ func providerPreHandler(req *http.Request) *invocation.Invocation {
 	inv.MicroServiceName = chassisconfig.SelfServiceName
 	inv.RouteTags = utiltags.NewDefaultTag(chassisconfig.SelfVersion, chassisconfig.GlobalDefinition.AppID)
 	inv.SourceMicroService = req.Header.Get(chassisCommon.HeaderSourceName)
+	inv.Ctx = context.TODO()
 	return inv
 }
 
@@ -98,7 +100,8 @@ func LocalRequestHandler(w http.ResponseWriter, r *http.Request) {
 		handleErrorResponse(inv, w, http.StatusBadRequest, err)
 		return
 	}
-
+	//transfer header into ctx
+	inv.Ctx = context.WithValue(inv.Ctx, chassisCommon.ContextHeaderKey{}, h)
 	c, err := handler.GetChain(chassisCommon.Consumer, common.ChainConsumerOutgoing)
 	if err != nil {
 		handleErrorResponse(inv, w, http.StatusBadGateway, err)
@@ -142,7 +145,12 @@ func RemoteRequestHandler(w http.ResponseWriter, r *http.Request) {
 			inv.SourceMicroService = si.Name
 		}
 	}
-
+	h := make(map[string]string)
+	for k := range r.Header {
+		h[k] = r.Header.Get(k)
+	}
+	//transfer header into ctx
+	inv.Ctx = context.WithValue(inv.Ctx, chassisCommon.ContextHeaderKey{}, h)
 	c, err := handler.GetChain(chassisCommon.Provider, common.ChainProviderIncoming)
 	if err != nil {
 		handleErrorResponse(inv, w, http.StatusBadGateway, err)
