@@ -34,7 +34,6 @@ import:
 - package: github.com/go-chassis/go-sc-client
   subpackages:
   - model
-- package: github.com/go-chassis/http-client
 - package: github.com/emicklei/go-restful
 - package: github.com/go-chassis/gohessian
 - package: github.com/patrickmn/go-cache

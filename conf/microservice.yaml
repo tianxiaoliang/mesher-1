@@ -1,5 +1,4 @@
 ## microservice property
-APPLICATION_ID: mesher
 service_description:
   name: hellomesher
   version: 0.0.1
