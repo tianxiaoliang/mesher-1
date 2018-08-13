@@ -86,11 +86,7 @@ func Init() error {
 	if err != nil {
 		return err
 	}
-	if err := yaml.Unmarshal([]byte(contents), mesherConfig); err != nil {
-		return err
-	}
-
-	return nil
+	return yaml.Unmarshal([]byte(contents), mesherConfig)
 }
 
 //GetConfigContents returns config contents

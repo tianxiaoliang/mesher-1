@@ -34,7 +34,7 @@ import (
 
 //Init function initiates admin server config and runs it
 func Init() (err error) {
-	var isAdminEnable *bool = config.GetConfig().Admin.Enable
+	isAdminEnable := config.GetConfig().Admin.Enable
 
 	if isAdminEnable != nil && *isAdminEnable == false {
 		lager.Logger.Infof("admin api are not enable")
