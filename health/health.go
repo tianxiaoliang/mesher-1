@@ -115,11 +115,7 @@ func L4Check(address string) error {
 	if err != nil {
 		return err
 	}
-	if err := c.Close(); err != nil {
-		return err
-	}
-
-	return nil
+	return c.Close()
 }
 
 //Run Launch go routines to check service health

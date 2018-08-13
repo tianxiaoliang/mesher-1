@@ -19,3 +19,5 @@ glide.lock
 *.log
 
 _build
+mesher
+coverage.txt
