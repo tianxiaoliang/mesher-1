@@ -2,7 +2,6 @@ package health_test
 
 import (
 	"github.com/go-chassis/go-chassis/core/lager"
-	"github.com/go-chassis/mesher/cmd"
 	"github.com/go-chassis/mesher/config"
 	"github.com/go-chassis/mesher/health"
 	"github.com/stretchr/testify/assert"
@@ -24,8 +23,8 @@ func TestHttpCheck(t *testing.T) {
 
 	t.Log("Check server stoped")
 	check := &config.HealthCheck{
-		PortName: "rest-console",
-		URI:      "/health",
+		Port: "rest-console",
+		URI:  "/health",
 	}
 	addr := "127.0.0.1:3000"
 	err := health.HTTPCheck(check, addr)
@@ -38,8 +37,8 @@ func TestHttpCheck(t *testing.T) {
 
 	t.Log("check real health ")
 	check = &config.HealthCheck{
-		PortName: "rest-console",
-		URI:      "/health",
+		Port: "rest-console",
+		URI:  "/health",
 	}
 	addr = "127.0.0.1:3000"
 	err = health.HTTPCheck(check, addr)
@@ -47,8 +46,8 @@ func TestHttpCheck(t *testing.T) {
 
 	t.Log("status match 500,must fail ")
 	check = &config.HealthCheck{
-		PortName: "rest-console",
-		URI:      "/health",
+		Port: "rest-console",
+		URI:  "/health",
 		Match: &config.Match{
 			Status: "201",
 		},
@@ -59,8 +58,8 @@ func TestHttpCheck(t *testing.T) {
 
 	t.Log("body match fake,must fail ")
 	check = &config.HealthCheck{
-		PortName: "rest-console",
-		URI:      "/health",
+		Port: "rest-console",
+		URI:  "/health",
 		Match: &config.Match{
 			Body: "fake",
 		},
@@ -71,8 +70,8 @@ func TestHttpCheck(t *testing.T) {
 
 	t.Log("body match right,no error ")
 	check = &config.HealthCheck{
-		PortName: "rest-console",
-		URI:      "/health",
+		Port: "rest-console",
+		URI:  "/health",
 		Match: &config.Match{
 			Body: "hello",
 		},
@@ -83,8 +82,8 @@ func TestHttpCheck(t *testing.T) {
 
 	t.Log("all match,no error ")
 	check = &config.HealthCheck{
-		PortName: "rest-console",
-		URI:      "/health",
+		Port: "rest-console",
+		URI:  "/health",
 		Match: &config.Match{
 			Status: "200",
 			Body:   "hello",
@@ -97,21 +96,27 @@ func TestHttpCheck(t *testing.T) {
 
 func TestParseConfig(t *testing.T) {
 	lager.Initialize("", "DEBUG", "", "size", true, 1, 10, 7)
-	cmd.Configs = &cmd.ConfigFromCmd{
-		PortsMap: map[string]string{
-			"rest-console": "127.0.0.1:9000",
-		},
-	}
 	check := &config.HealthCheck{
-		PortName: "rest-console",
-		URI:      "/health",
+		Port: "8080",
+		URI:  "/health",
 		Match: &config.Match{
 			Body: "hello",
 		},
 	}
 	addr, c, err := health.ParseConfig(check)
 	assert.NoError(t, err)
-	assert.Equal(t, "127.0.0.1:9000", addr)
+	assert.Equal(t, "127.0.0.1:8080", addr)
+	assert.Nil(t, c)
+
+	check = &config.HealthCheck{
+		Port:     "8080",
+		Protocol: "rest",
+		URI:      "/health",
+		Match: &config.Match{
+			Body: "hello",
+		},
+	}
+	_, c, err = health.ParseConfig(check)
 	err = c(check, addr)
 	assert.Error(t, err)
 }

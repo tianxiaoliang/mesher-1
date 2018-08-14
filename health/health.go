@@ -5,8 +5,6 @@ import (
 	"github.com/go-chassis/go-chassis/core/lager"
 	"github.com/go-chassis/go-chassis/core/registry"
 	"github.com/go-chassis/go-chassis/pkg/runtime"
-	"github.com/go-chassis/go-chassis/pkg/util"
-	"github.com/go-chassis/mesher/cmd"
 	"github.com/go-chassis/mesher/config"
 	"net"
 	"regexp"
@@ -22,8 +20,8 @@ const (
 
 //Error definitions
 var (
-	ErrPortNameEmpty = errors.New("portName is empty")
-	ErrInvalidURI    = errors.New("uri must start with /")
+	ErrPortEmpty  = errors.New("port is empty")
+	ErrInvalidURI = errors.New("uri must start with /")
 )
 
 //Deal handle the unhealthy status
@@ -85,7 +83,7 @@ func runCheckers(c *config.HealthCheck, l7check L7Check, address string, deal De
 		for range ticker.C {
 			err := CheckService(c, l7check, address)
 			if err != nil {
-				lager.Logger.Error("health check failed for service port:"+c.PortName, err)
+				lager.Logger.Errorf(err, "health check failed for service port[%s]:", c.Port)
 			}
 			deal(err)
 		}
@@ -95,7 +93,7 @@ func runCheckers(c *config.HealthCheck, l7check L7Check, address string, deal De
 
 //CheckService check service health based on config
 func CheckService(c *config.HealthCheck, l7check L7Check, address string) error {
-	lager.Logger.Debug("check port:" + c.PortName + ": " + address)
+	lager.Logger.Debugf("check port [%s]", c.Port)
 	if l7check != nil {
 		if err := l7check(c, address); err != nil {
 			return err
@@ -115,14 +113,17 @@ func L4Check(address string) error {
 	if err != nil {
 		return err
 	}
-	return c.Close()
+	if err = c.Close(); err != nil {
+		return err
+	}
+	return nil
 }
 
 //Run Launch go routines to check service health
 func Run() error {
 	lager.Logger.Info("health manager start")
 	for _, v := range config.GetConfig().HealthCheck {
-		lager.Logger.Debug("check local health: " + v.PortName)
+		lager.Logger.Debugf("check local health [%s],protocol [%s]", v.Port, v.Protocol)
 		address, check, err := ParseConfig(v)
 		if err != nil {
 			lager.Logger.Warn("Health keeper can not check health")
@@ -141,21 +142,21 @@ func Run() error {
 //port name must named as {protocol}-{name}
 //protocol must has checker
 func ParseConfig(c *config.HealthCheck) (string, L7Check, error) {
-	if c.PortName == "" {
-		return "", nil, ErrPortNameEmpty
+	if c.Port == "" {
+		return "", nil, ErrPortEmpty
 	}
-	p, _, err := util.ParsePortName(c.PortName)
-	if err != nil {
-		return "", nil, err
+	var check L7Check
+	if c.Protocol != "" {
+		var ok bool
+		check, ok = l7Checks[c.Protocol]
+		if !ok {
+			return "", nil, errors.New("don not support L7 checker:" + c.Protocol)
+		}
+	} else {
+		check = nil
 	}
-	check, ok := l7Checks[p]
-	if !ok {
-		return "", nil, errors.New("don not support L7 checker:" + p)
-	}
-	address, ok := cmd.Configs.PortsMap[c.PortName]
-	if !ok {
-		return "", nil, errors.New("no define port:" + c.PortName)
-	}
+
+	address := "127.0.0.1:" + c.Port
 	if c.URI != "" {
 		if !strings.HasPrefix(c.URI, "/") {
 			return "", nil, ErrInvalidURI

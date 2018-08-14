@@ -11,7 +11,8 @@ examples:
 Check local http service
 ```yaml
 localHealthCheck:
-  - portName: rest
+  - port: 8080
+    protocol: rest
     uri: /health
     interval: 30s
     match:
@@ -22,11 +23,13 @@ localHealthCheck:
 ### Options
 
 
-**portName**
->*(require, string)* must be one of the port name you define in mesher command line params "service-ports"
-that name tells mesher the service port, currently just support rest-{suffix}, for other protocol, 
-will use default TCP checker
+**port**
+>*(require, string)* must be a port number, mesher is only responsible to check local service, 
+it use 127.0.0.1:{port} to check service
 
+**protocol**
+>*(optional, string)* mesher has a built-in checker "rest",for other protocol, 
+will use default TCP checker unless you implement your own checker
 
 **uri**
 >*(optional, string)* uri start with /.

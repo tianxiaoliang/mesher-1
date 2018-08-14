@@ -11,7 +11,8 @@ type MesherConfig struct {
 
 //HealthCheck define how to check local ports
 type HealthCheck struct {
-	PortName string `yaml:"portName"`
+	Port     string `yaml:"port"`
+	Protocol string `yaml:"protocol"`
 	URI      string `yaml:"uri"`
 	Interval string `yaml:"interval"`
 	Match    *Match `yaml:"match"`
