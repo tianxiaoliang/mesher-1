@@ -44,7 +44,7 @@ import (
 )
 
 var p *sync.Pool
-var dr = resolver.GetDestinationResolver()
+var dr = resolver.GetDestinationResolver("http")
 var sr = resolver.GetSourceResolver()
 
 var (

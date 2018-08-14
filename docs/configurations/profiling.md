@@ -1,6 +1,6 @@
 # Profile Mesher
 
-Mesher has a convenience way to enbale go pprof, so that you can easily analyze the performance of mesher
+Mesher has a convenience way to enable go pprof, so that you can easily analyze the performance of mesher
 
 ## Configurations
 

@@ -22,12 +22,13 @@ import (
 	"log"
 	"net/url"
 
+	"fmt"
 	"github.com/go-chassis/go-chassis/core/lager"
 	"github.com/go-chassis/go-chassis/core/util/string"
 	"github.com/go-chassis/mesher/config"
 )
 
-var dr DestinationResolver
+var drMap = make(map[string]DestinationResolver)
 
 //DestinationResolverPlugins is a map
 var DestinationResolverPlugins map[string]func() DestinationResolver
@@ -83,34 +84,41 @@ func New() DestinationResolver {
 }
 
 //GetDestinationResolver returns destinationResolver object
-func GetDestinationResolver() DestinationResolver {
-	return dr
+func GetDestinationResolver(name string) DestinationResolver {
+	return drMap[name]
 }
 
-//InstallDestinationResolver function installs new plugin
-func InstallDestinationResolver(name string, newFunc func() DestinationResolver) {
+//InstallDestinationResolverPlugin function installs new plugin
+func InstallDestinationResolverPlugin(name string, newFunc func() DestinationResolver) {
 	DestinationResolverPlugins[name] = newFunc
 	log.Printf("Installed DestinationResolver Plugin, name=%s", name)
 }
+
+//InstallDefaultDestinationResolver install the default implementation, so that you don't need to set config file
+func InstallDefaultDestinationResolver(name string, dr DestinationResolver) {
+	drMap[name] = dr
+	log.Printf("Installed default DestinationResolver name=%s", name)
+}
 func init() {
 	DestinationResolverPlugins = make(map[string]func() DestinationResolver)
-	dr = &DefaultDestinationResolver{}
-	InstallDestinationResolver(DefaultPlugin, New)
+	InstallDestinationResolverPlugin(DefaultPlugin, New)
+	InstallDefaultDestinationResolver("http", &DefaultDestinationResolver{})
 }
 
 //Init function reads config and initiates it
 func Init() error {
-	var name string
 	if config.GetConfig().Plugin != nil {
-		name = config.GetConfig().Plugin.DestinationResolver
+		for name, v := range config.GetConfig().Plugin.DestinationResolver {
+			if v == "" {
+				v = DefaultPlugin
+			}
+			f, ok := DestinationResolverPlugins[v]
+			if !ok {
+				return fmt.Errorf("unknown destination resolver [%s]", v)
+			}
+			drMap[name] = f()
+		}
 	}
-	if name == "" {
-		name = DefaultPlugin
-	}
-	df, ok := DestinationResolverPlugins[name]
-	if !ok {
-		return ErrUnknownResolver
-	}
-	dr = df()
+
 	return nil
 }
