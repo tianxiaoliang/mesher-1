@@ -1,16 +1,16 @@
 package config_test
 
 import (
-//	"github.com/go-chassis/go-chassis/core/archaius"
-//	cConfig "github.com/go-chassis/go-chassis/core/config"
-//	"github.com/go-chassis/go-chassis/core/lager"
-//	"github.com/go-chassis/go-chassis/pkg/util/fileutil"
+	//	"github.com/go-chassis/go-chassis/core/archaius"
+	//	cConfig "github.com/go-chassis/go-chassis/core/config"
+	//	"github.com/go-chassis/go-chassis/core/lager"
+	//	"github.com/go-chassis/go-chassis/pkg/util/fileutil"
 	"github.com/go-chassis/mesher/cmd"
 	"github.com/go-chassis/mesher/config"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v2"
-//	"os"
-//	"path/filepath"
+	//	"os"
+	//	"path/filepath"
 	"testing"
 )
 
@@ -22,7 +22,8 @@ func TestGetConfigFilePath(t *testing.T) {
 
 var file = []byte(`
 localHealthCheck:
-  - portName: rest
+  - port: 8800
+    protocol: rest
     uri: /health
     interval: 30s
     match:
@@ -43,6 +44,7 @@ func TestSetConfig(t *testing.T) {
 		t.Error(err)
 	}
 	assert.Equal(t, "host", c.Plugin.DestinationResolver["http"])
+	assert.Equal(t, "8800", c.HealthCheck[0].Port)
 }
 
 // Testcase is trying to create files inside /tmp/build folder which is dynamic, so in travis it is not possible to create folder in prior, so can't test this case in travis
@@ -72,5 +74,5 @@ func TestSetConfig(t *testing.T) {
 	assert.Equal(t, "host", config.GetConfig().Plugin.DestinationResolver)
 	assert.Equal(t, true, config.GetConfig().PProf.Enable)
 	assert.Equal(t, "0.0.0.0:6060", config.GetConfig().PProf.Listen)
-	assert.Equal(t, "rest", config.GetConfig().HealthCheck[0].PortName)
+	assert.Equal(t, "rest", config.GetConfig().HealthCheck[0].Port)
 }*/
