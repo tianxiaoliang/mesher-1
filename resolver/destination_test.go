@@ -20,15 +20,16 @@ package resolver
 import (
 	"testing"
 
-//	"github.com/go-chassis/go-chassis/core/archaius"
-//	cConfig "github.com/go-chassis/go-chassis/core/config"
-//	"github.com/go-chassis/go-chassis/core/lager"
-//	"github.com/go-chassis/go-chassis/pkg/util/fileutil"
-//	"github.com/go-chassis/mesher/cmd"
-//	"github.com/go-chassis/mesher/config"
+	//	"github.com/go-chassis/go-chassis/core/archaius"
+	//	cConfig "github.com/go-chassis/go-chassis/core/config"
+	//	"github.com/go-chassis/go-chassis/core/lager"
+	//	"github.com/go-chassis/go-chassis/pkg/util/fileutil"
+	//	"github.com/go-chassis/mesher/cmd"
+	//	"github.com/go-chassis/mesher/config"
 	"net/http"
-//	"os"
-//	"path/filepath"
+	//	"os"
+	//	"path/filepath"
+	"github.com/go-chassis/go-chassis/core/lager"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -54,6 +55,8 @@ import (
 }*/
 
 func TestResolve(t *testing.T) {
+	lager.Initialize("", "DEBUG", "",
+		"size", true, 1, 10, 7)
 	d := &DefaultDestinationResolver{}
 	header := http.Header{}
 	header.Add("cookie", "user=jason")
@@ -66,8 +69,16 @@ func TestResolve(t *testing.T) {
 	assert.Error(t, err)
 	err = d.Resolve("abc", map[string]string{}, "http://127.0.0.1:80/test", destinationString)
 	assert.NoError(t, err)
+	err = d.Resolve("abc", map[string]string{}, "127.0.0.1:80", destinationString)
+	assert.Error(t, err)
 }
 
 func TestGetDestinationResolver(t *testing.T) {
-	GetDestinationResolver()
+	dr := GetDestinationResolver("http")
+	assert.NotNil(t, dr)
+	dr = GetDestinationResolver("http_nil")
+	assert.Nil(t, dr)
+	InstallDefaultDestinationResolver("http_nil", &DefaultDestinationResolver{})
+	dr = GetDestinationResolver("http_nil")
+	assert.NotNil(t, dr)
 }

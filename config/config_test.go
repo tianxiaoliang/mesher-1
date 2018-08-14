@@ -32,9 +32,9 @@ pprof:
   enable: true
   listen: 0.0.0.0:6060
 plugin:
-  destinationResolver: host #用户可自定义如何将host转为换destination name，默认为host直接就是sn，
-  souceResolver: servicecenter #从source ip反向查询service name
-  #这里表示查询api 得到ip所对应的serviceName.namespace.dnsSuffix，对于servicecenter 由于可能是多个微服务在一个host上这种场景无法支持。也不合理，我们干脆绑定一个网络平面的docker
+  destinationResolver:
+    http: host # how to turn host to destination name. default to service name，
+    grpc: ip
   `)
 
 func TestSetConfig(t *testing.T) {
@@ -42,7 +42,7 @@ func TestSetConfig(t *testing.T) {
 	if err := yaml.Unmarshal([]byte(file), c); err != nil {
 		t.Error(err)
 	}
-	assert.Equal(t, "host", c.Plugin.DestinationResolver)
+	assert.Equal(t, "host", c.Plugin.DestinationResolver["http"])
 }
 
 // Testcase is trying to create files inside /tmp/build folder which is dynamic, so in travis it is not possible to create folder in prior, so can't test this case in travis

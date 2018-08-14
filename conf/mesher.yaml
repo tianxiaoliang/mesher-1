@@ -1,6 +1,7 @@
 ## Router rules and fault injection rules are moved to router.yaml
 #plugin:
-#  destinationResolver: host # how to turn host to destination name. default to service name，
+#  destinationResolver:
+#    http: host # how to turn host to destination name. default to service name，
 
 ##admin: #admin API
 #  serverUri : 127.0.0.1:30102 # addr on listening
@@ -10,10 +11,10 @@
 #pprof:
 #  enable: false
 
-localHealthCheck:
-  - portName: rest
-    uri: /health
-    interval: 30s
-    match:
-      status: 200
-      body: ok
+#localHealthCheck:
+#  - portName: rest
+#    uri: /health
+#    interval: 30s
+#    match:
+#      status: 200
+#      body: ok

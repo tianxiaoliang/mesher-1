@@ -9,3 +9,4 @@ User guides
    configurations/profiling
    configurations/admin
    configurations/health
+   configurations/destination_resolver

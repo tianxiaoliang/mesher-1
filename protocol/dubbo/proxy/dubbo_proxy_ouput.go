@@ -46,7 +46,7 @@ import (
 	"github.com/go-chassis/mesher/protocol"
 )
 
-var dr = resolver.GetDestinationResolver()
+var dr = resolver.GetDestinationResolver("http")
 var sr = resolver.GetSourceResolver()
 
 const (

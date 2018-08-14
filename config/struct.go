@@ -38,8 +38,8 @@ type Policy struct {
 
 //Plugin has attributes for destination and source resolver
 type Plugin struct {
-	DestinationResolver string `yaml:"destinationResolver"`
-	SourceResolver      string `yaml:"sourceResolver"`
+	DestinationResolver map[string]string `yaml:"destinationResolver"`
+	SourceResolver      string            `yaml:"sourceResolver"`
 }
 
 //Admin has attributes for enabling, serverURI and metrics for admin data
