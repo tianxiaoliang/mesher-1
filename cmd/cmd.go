@@ -97,7 +97,7 @@ func (c *ConfigFromCmd) GeneratePortsMap() error {
 	addr := os.Getenv(common.EnvSpecificAddr)
 	if addr != "" {
 		addr = strings.TrimSpace(addr)
-		log.Printf("%s is deprecated, plz use SERVICE_PORTS=http:8080,grpc:90000 instead", common.EnvSpecificAddr)
+		log.Printf("%s is deprecated, plz use SERVICE_PORTS=http:8080,grpc:9000 instead", common.EnvSpecificAddr)
 		s := strings.Split(addr, ":")
 		if len(s) != 2 {
 			return fmt.Errorf("[%s] is invalid", addr)

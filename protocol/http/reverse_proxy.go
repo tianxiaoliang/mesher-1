@@ -47,6 +47,12 @@ import (
 var dr = resolver.GetDestinationResolver("http")
 var sr = resolver.GetSourceResolver()
 
+//constants for headers
+const (
+	XForwardedPort = "X-Forwarded-Port"
+	XForwardedHost = "X-Forwarded-Host"
+)
+
 var (
 	//ErrRestFaultAbort is a variable of type error
 	ErrRestFaultAbort = errors.New("injecting abort")
@@ -95,10 +101,16 @@ func LocalRequestHandler(w http.ResponseWriter, r *http.Request) {
 		h[k] = r.Header.Get(k)
 	}
 	//Resolve Destination
-	if err = dr.Resolve(source, h, r.URL.String(), &inv.MicroServiceName); err != nil {
+	port, err := dr.Resolve(source, h, r.URL.String(), &inv.MicroServiceName)
+	if err != nil {
 		handleErrorResponse(inv, w, http.StatusBadRequest, err)
 		return
 	}
+
+	if port != "" {
+		h[XForwardedPort] = port
+	}
+
 	//transfer header into ctx
 	inv.Ctx = context.WithValue(inv.Ctx, chassisCommon.ContextHeaderKey{}, h)
 	c, err := handler.GetChain(chassisCommon.Consumer, common.ChainConsumerOutgoing)
@@ -156,16 +168,12 @@ func RemoteRequestHandler(w http.ResponseWriter, r *http.Request) {
 		lager.Logger.Error("Get chain failed", err)
 		return
 	}
-	inv.Endpoint = cmd.Configs.PortsMap[inv.Protocol]
-	if inv.Endpoint == "" {
+	if err = SetLocalServiceAddress(inv, r.Header.Get("X-Forwarded-Port")); err != nil {
 		handleErrorResponse(inv, w, http.StatusBadGateway,
-			fmt.Errorf("[%s] is not supported, [%s] didn't set env [%s] or cmd parameter --service-ports before mesher start",
-				inv.Protocol, inv.MicroServiceName, common.EnvServicePorts))
-		return
+			err)
 	}
-	if r.Header.Get("X-Forwarded-Host") == "" {
-		orgHost := r.Host
-		r.Header.Set("X-Forwarded-Host", orgHost)
+	if r.Header.Get(XForwardedHost) == "" {
+		r.Header.Set(XForwardedHost, r.Host)
 	}
 	var invRsp *invocation.Response
 	c.Next(inv, func(ir *invocation.Response) error {
@@ -179,6 +187,23 @@ func RemoteRequestHandler(w http.ResponseWriter, r *http.Request) {
 	if _, err = handleRequest(w, inv, invRsp); err != nil {
 		lager.Logger.Error("Handle request failed", err)
 	}
+}
+
+//SetLocalServiceAddress assign invocation endpoint a local service address
+// it uses config in cmd or env fi
+// if it is empty, then try to use original port from client as local port
+func SetLocalServiceAddress(inv *invocation.Invocation, port string) error {
+	inv.Endpoint = cmd.Configs.PortsMap[inv.Protocol]
+	if inv.Endpoint == "" {
+		if port != "" {
+			inv.Endpoint = "127.0.0.1:" + port
+			return nil
+		} else {
+			return fmt.Errorf("[%s] is not supported, [%s] didn't set env [%s] or cmd parameter --service-ports before mesher start",
+				inv.Protocol, inv.MicroServiceName, common.EnvServicePorts)
+		}
+	}
+	return nil
 }
 func copyChassisResp2HttpResp(w http.ResponseWriter, resp *rest.Response) {
 	postProcessResponse(resp.Resp)

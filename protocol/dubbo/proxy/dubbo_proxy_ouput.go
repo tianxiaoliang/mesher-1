@@ -298,7 +298,8 @@ func ProxyRestHandler(ctx *dubbo.InvokeContext) error {
 		h[k] = req.GetHeader(k)
 	}
 	//Resolve Destination
-	if err = dr.Resolve(source, h, inv.URLPathFormat, &inv.MicroServiceName); err != nil {
+	_, err = dr.Resolve(source, h, inv.URLPathFormat, &inv.MicroServiceName)
+	if err != nil {
 		return err
 	}
 

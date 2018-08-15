@@ -24,7 +24,6 @@ import (
 
 	"fmt"
 	"github.com/go-chassis/go-chassis/core/lager"
-	"github.com/go-chassis/go-chassis/core/util/string"
 	"github.com/go-chassis/mesher/config"
 )
 
@@ -44,7 +43,7 @@ var ErrUnknownResolver = errors.New("unknown Destination Resolver")
 
 //DestinationResolver is a interface with Resolve method
 type DestinationResolver interface {
-	Resolve(sourceAddr string, header map[string]string, rawURI string, destinationName *string) error
+	Resolve(sourceAddr string, header map[string]string, rawURI string, destinationName *string) (string, error)
 }
 
 //DefaultDestinationResolver is a struct
@@ -52,30 +51,26 @@ type DefaultDestinationResolver struct {
 }
 
 //Resolve resolves service's endpoint
-func (dr *DefaultDestinationResolver) Resolve(sourceAddr string, header map[string]string, rawURI string, destinationName *string) error {
+//service may have multiple port for same protocol
+func (dr *DefaultDestinationResolver) Resolve(sourceAddr string, header map[string]string, rawURI string, destinationName *string) (string, error) {
 	u, err := url.Parse(rawURI)
 	if err != nil {
 		lager.Logger.Error("Can not parse url", err)
-		return err
+		return "", err
 	}
 
 	if u.Host == "" {
-		return errors.New(`Invalid uri, please check:
+		return "", errors.New(`Invalid uri, please check:
 1, For provider, mesher listens on external ip
 2, Set http_proxy as mesher address, before sending request`)
 	}
 
 	if u.Host == SelfEndpoint {
-		return errors.New(`uri format must be: http://serviceName/api`)
+		return "", errors.New(`uri format must be: http://serviceName/api`)
 	}
 
-	if h := stringutil.SplitFirstSep(u.Host, ":"); h != "" {
-		*destinationName = h
-		return nil
-	}
-
-	*destinationName = u.Host
-	return nil
+	*destinationName = u.Hostname()
+	return u.Port(), nil
 }
 
 //New function returns new DefaultDestinationResolver struct object

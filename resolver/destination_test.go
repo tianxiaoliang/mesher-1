@@ -62,15 +62,22 @@ func TestResolve(t *testing.T) {
 	header.Add("cookie", "user=jason")
 	header.Add("X-Age", "18")
 	mystring := "Server"
-	var destinationString *string = &mystring
-	err := d.Resolve("abc", map[string]string{}, "127.0.1.1", destinationString)
+	var destinationString = &mystring
+	p, err := d.Resolve("abc", map[string]string{}, "127.0.1.1", destinationString)
 	assert.Error(t, err)
-	err = d.Resolve("abc", map[string]string{}, "", destinationString)
+	assert.Equal(t, "", p)
+
+	p, err = d.Resolve("abc", map[string]string{}, "", destinationString)
 	assert.Error(t, err)
-	err = d.Resolve("abc", map[string]string{}, "http://127.0.0.1:80/test", destinationString)
+	assert.Equal(t, "", p)
+
+	p, err = d.Resolve("abc", map[string]string{}, "http://127.0.0.1:80/test", destinationString)
 	assert.NoError(t, err)
-	err = d.Resolve("abc", map[string]string{}, "127.0.0.1:80", destinationString)
+	assert.Equal(t, "80", p)
+
+	p, err = d.Resolve("abc", map[string]string{}, "127.0.0.1:80", destinationString)
 	assert.Error(t, err)
+	assert.Equal(t, "", p)
 }
 
 func TestGetDestinationResolver(t *testing.T) {
@@ -81,4 +88,15 @@ func TestGetDestinationResolver(t *testing.T) {
 	InstallDefaultDestinationResolver("http_nil", &DefaultDestinationResolver{})
 	dr = GetDestinationResolver("http_nil")
 	assert.NotNil(t, dr)
+}
+
+func BenchmarkDefaultDestinationResolver_Resolve(b *testing.B) {
+	lager.Initialize("", "DEBUG", "",
+		"size", true, 1, 10, 7)
+	d := &DefaultDestinationResolver{}
+	mystring := "Server"
+	var destinationString = &mystring
+	for i := 0; i < b.N; i++ {
+		  d.Resolve("abc", map[string]string{}, "http://127.0.0.1:80/test", destinationString)
+	}
 }
