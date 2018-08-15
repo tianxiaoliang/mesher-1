@@ -21,19 +21,16 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"github.com/go-chassis/mesher/common"
+	"github.com/go-chassis/mesher/config"
+	"github.com/go-chassis/mesher/protocol/dubbo/proxy"
+	"github.com/go-chassis/mesher/resolver"
 	"net"
 	"net/http"
 	"strings"
-	"sync"
-
-	"github.com/go-chassis/mesher/common"
-	"github.com/go-chassis/mesher/config"
-	dubboproxy "github.com/go-chassis/mesher/protocol/dubbo/proxy"
-	"github.com/go-chassis/mesher/resolver"
 
 	chassisCom "github.com/go-chassis/go-chassis/core/common"
 	chassisConfig "github.com/go-chassis/go-chassis/core/config"
-	"github.com/go-chassis/go-chassis/core/invocation"
 	"github.com/go-chassis/go-chassis/core/lager"
 	"github.com/go-chassis/go-chassis/core/server"
 	chassisTLS "github.com/go-chassis/go-chassis/core/tls"
@@ -48,11 +45,6 @@ func init() {
 }
 
 func newServer(opts server.Options) server.ProtocolServer {
-	p = &sync.Pool{
-		New: func() interface{} {
-			return &invocation.Invocation{}
-		},
-	}
 	return &httpServer{
 		opts: opts,
 	}

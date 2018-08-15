@@ -22,9 +22,9 @@ import (
 	"errors"
 	"io"
 	"net/http"
-	"sync"
 	"time"
 
+	"fmt"
 	"github.com/go-chassis/go-chassis/client/rest"
 	chassisCommon "github.com/go-chassis/go-chassis/core/common"
 	chassisconfig "github.com/go-chassis/go-chassis/core/config"
@@ -37,32 +37,31 @@ import (
 	"github.com/go-chassis/go-chassis/pkg/runtime"
 	"github.com/go-chassis/go-chassis/pkg/util/tags"
 	"github.com/go-chassis/go-chassis/third_party/forked/afex/hystrix-go/hystrix"
+	"github.com/go-chassis/mesher/cmd"
 	"github.com/go-chassis/mesher/common"
 	"github.com/go-chassis/mesher/metrics"
 	"github.com/go-chassis/mesher/protocol"
 	"github.com/go-chassis/mesher/resolver"
 )
 
-var p *sync.Pool
 var dr = resolver.GetDestinationResolver("http")
 var sr = resolver.GetSourceResolver()
 
 var (
-	//ErrRestFaultAbort is a varible of type error
+	//ErrRestFaultAbort is a variable of type error
 	ErrRestFaultAbort = errors.New("injecting abort")
-	//ErrRestFault is a varible of type error
+	//ErrRestFault is a variable of type error
 	ErrRestFault = errors.New("injecting abort and delay")
-	//ErrNilResponse is a varible of type error
+	//ErrNilResponse is a variable of type error
 	ErrNilResponse = errors.New("http response is nil")
 )
 
 func preHandler(req *http.Request) *invocation.Invocation {
-	inv := p.Get().(*invocation.Invocation)
+	inv := &invocation.Invocation{}
 	inv.Args = &rest.Request{Req: req}
 	inv.Reply = rest.NewResponse()
 	inv.Protocol = "rest"
 	inv.URLPathFormat = req.URL.Path
-	inv.Ctx = context.Background()
 	return inv
 }
 
@@ -157,7 +156,17 @@ func RemoteRequestHandler(w http.ResponseWriter, r *http.Request) {
 		lager.Logger.Error("Get chain failed", err)
 		return
 	}
-
+	inv.Endpoint = cmd.Configs.PortsMap[inv.Protocol]
+	if inv.Endpoint == "" {
+		handleErrorResponse(inv, w, http.StatusBadGateway,
+			fmt.Errorf("[%s] is not supported, [%s] didn't set env [%s] or cmd parameter --service-ports before mesher start",
+				inv.Protocol, inv.MicroServiceName, common.EnvServicePorts))
+		return
+	}
+	if r.Header.Get("X-Forwarded-Host") == "" {
+		orgHost := r.Host
+		r.Header.Set("X-Forwarded-Host", orgHost)
+	}
 	var invRsp *invocation.Response
 	c.Next(inv, func(ir *invocation.Response) error {
 		//Send the request to the destination

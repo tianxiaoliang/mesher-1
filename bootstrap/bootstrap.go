@@ -26,7 +26,6 @@ import (
 	"github.com/go-chassis/mesher/cmd"
 	"github.com/go-chassis/mesher/common"
 	"github.com/go-chassis/mesher/config"
-	"github.com/go-chassis/mesher/handler"
 	"github.com/go-chassis/mesher/register"
 	"github.com/go-chassis/mesher/resolver"
 
@@ -104,8 +103,6 @@ func SetHandlers() {
 	providerChain := strings.Join([]string{
 		chassisHandler.RatelimiterProvider,
 		chassisHandler.BizkeeperProvider,
-		handler.LocalSelection,
-		handler.XForward,
 		chassisHandler.Transport,
 	}, ",")
 	consumerChainMap := map[string]string{
