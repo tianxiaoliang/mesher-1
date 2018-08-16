@@ -102,7 +102,6 @@ func SetHandlers() {
 	}, ",")
 	providerChain := strings.Join([]string{
 		chassisHandler.RatelimiterProvider,
-		chassisHandler.BizkeeperProvider,
 		chassisHandler.Transport,
 	}, ",")
 	consumerChainMap := map[string]string{
