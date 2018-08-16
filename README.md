@@ -5,13 +5,13 @@
 A service mesh implementation based on [go chassis](https://github.com/go-chassis/go-chassis).
 
 One big advantage of Mesher is it is able to 
-work with go-chassis in same service mesh control plane like Istio, without control plane they can work 
-together with ServiceComb Service center.
-So if you choose go as your service language you can use go-chassis to gain better performance, and you can freely use 
-other programing language which suit your service scenario the most
+work with go-chassis in same service mesh control plane like Istio. Without Istio they can work 
+together with ServiceComb Service center and running on any infrastructure(docker, VM, baremetal). 
+So if you choose go as your programing language, you can use go-chassis to gain better performance, and you can freely use 
+other programing language which suit your service the most
 
 Mesher support both linux and windows OS, 
-that makes possible that .Net service can work with java, go, python service in distributed system easily
+that makes possible that .Net service can work with java, go, python service in one distributed system easily
 
 # Features
 - go-chassis: Mesher has all of features of [go chassis](https://github.com/go-chassis/go-chassis)
@@ -26,9 +26,13 @@ Refer to [mesher-examples](https://github.com/go-chassis/mesher-examples)
 
 1. Install ServiceComb [service-center](https://github.com/ServiceComb/service-center/releases)
 
-2. go build mesher.go
-
-3. ./mesher
+2. build and run
+```shell
+cd mesher
+glide install
+go build mesher.go
+./mesher
+```
 
 # Documentations
 
