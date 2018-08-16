@@ -150,9 +150,7 @@ func RemoteRequestHandler(w http.ResponseWriter, r *http.Request) {
 		source := stringutil.SplitFirstSep(r.RemoteAddr, ":")
 		//Resolve Source
 		si := sr.Resolve(source)
-		if si == nil {
-			lager.Logger.Debug("Can not resolve " + source + " to Source info")
-		} else {
+		if si != nil {
 			inv.SourceMicroService = si.Name
 		}
 	}

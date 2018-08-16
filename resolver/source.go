@@ -19,10 +19,7 @@ package resolver
 
 import (
 	"errors"
-	"github.com/go-chassis/go-chassis/core/lager"
 	"github.com/go-chassis/go-chassis/core/registry"
-	"github.com/go-chassis/go-sc-client/model"
-	"github.com/go-chassis/mesher/common"
 )
 
 var (
@@ -46,28 +43,9 @@ func (sr *DefaultSourceResolver) Resolve(source string) *registry.SourceInfo {
 	if source == "127.0.0.1" {
 		return nil
 	}
-	cacheDatum, ok := registry.IPIndexedCache.Get(source)
-	if !ok {
-		return nil
-	}
-	ms, ok := cacheDatum.(*model.MicroService)
-	if !ok {
-		return nil
-	}
+	si := registry.GetIPIndex(source)
 
-	if ms == nil {
-		lager.Logger.Warnf("Service is nil for IP %s, err: %v", source, ErrFoo)
-		return nil
-	}
-	sourceInfo := &registry.SourceInfo{}
-	sourceInfo.Tags = make(map[string]string)
-	sourceInfo.Name = ms.ServiceName
-	sourceInfo.Tags[common.BuildInTagApp] = ms.AppID
-	sourceInfo.Tags[common.BuildInTagVersion] = ms.Version
-	for k, v := range ms.Properties {
-		sourceInfo.Tags[k] = v
-	}
-	return sourceInfo
+	return si
 }
 
 //GetSourceResolver returns interface object
