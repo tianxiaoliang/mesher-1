@@ -53,7 +53,7 @@ func TestGetMesherHealth(t *testing.T) {
 
 func testInit() {
 	lager.Initialize("", "INFO", "", "size", true, 1, 10, 7)
-	p := filepath.Join(os.Getenv("GOPATH"), "src", "code.huawei.com", "cse", "mesher", "conf")
+	p := filepath.Join(os.Getenv("GOPATH"), "src", "github.com", "go-chassis", "mesher", "conf")
 	os.Setenv("CHASSIS_CONF_DIR", p)
 	err := config.Init()
 	if err != nil {

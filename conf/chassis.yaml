@@ -22,6 +22,8 @@ cse:
     chain:
       Consumer:
         outgoing:  #consumer handlers
+        #If registry type is pilot then to make sure traffic goes through mesher provider new handler needs to be added to consumer after loadbalance handler
+        #ex: router, ratelimiter-consumer, bizkeeper-consumer, loadbalance, port-selector, transport
       Provider:
         incoming:  #provider handlers
 #  loadbalance:
