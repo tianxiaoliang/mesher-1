@@ -3,6 +3,7 @@ package handler
 import (
 	"testing"
 
+	"github.com/go-chassis/go-chassis/core/common"
 	"github.com/go-chassis/go-chassis/core/config"
 	"github.com/go-chassis/go-chassis/core/config/model"
 	"github.com/go-chassis/go-chassis/core/handler"
@@ -64,17 +65,19 @@ func TestPortRewriteHandler_Names(t *testing.T) {
 }
 
 func TestReplacePort_InvalidEndpoint(t *testing.T) {
-	output := replacePort("")
+	output, err := replacePort("grpc", "")
+	assert.Error(t, err)
 	assert.Equal(t, "", output)
 }
 
 func TestReplacePort_ValidEndpoint(t *testing.T) {
-	output := replacePort("127.0.0.1:80")
+	output, err := replacePort(common.ProtocolRest, "127.0.0.1:80")
 	assert.Equal(t, "127.0.0.1:30101", output)
+	assert.NoError(t, err)
 }
 
 func BenchmarkReplacePort(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		replacePort("127.0.0.1:80")
+		replacePort(common.ProtocolRest, "127.0.0.1:80")
 	}
 }

@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"github.com/go-chassis/go-chassis/core/handler"
 	"github.com/go-chassis/go-chassis/core/invocation"
+	"github.com/go-chassis/mesher/pkg/ports"
 	"strings"
 )
 
@@ -33,11 +34,12 @@ type PortSelectionHandler struct {
 
 //Handle function replace the provider port to mesher port so that traffic goes through mesher
 func (ps *PortSelectionHandler) Handle(chain *handler.Chain, inv *invocation.Invocation, cb invocation.ResponseCallBack) {
-	inv.Endpoint = replacePort(inv.Endpoint)
+	var err error
+	inv.Endpoint, err = replacePort(inv.Protocol, inv.Endpoint)
 
 	if inv.Endpoint == "" {
 		r := &invocation.Response{
-			Err: fmt.Errorf("invalid endpoint"),
+			Err: err,
 		}
 		cb(r)
 		return
@@ -49,15 +51,15 @@ func (ps *PortSelectionHandler) Handle(chain *handler.Chain, inv *invocation.Inv
 }
 
 //replacePort will replace the provider port with mesher port.
-func replacePort(endpoint string) string {
+func replacePort(protocol, endpoint string) (string, error) {
 	eps := strings.Split(endpoint, ":")
 	if len(eps) != 2 {
-		return ""
+		return "", fmt.Errorf("invalid endpoint [%s]", eps)
 	}
 
-	eps[1] = "30101"
+	eps[1] = ports.GetFixedPort(protocol)
 
-	return strings.Join(eps, ":")
+	return strings.Join(eps, ":"), nil
 }
 
 //Name returns name
