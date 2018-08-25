@@ -21,3 +21,4 @@ glide.lock
 _build
 mesher
 coverage.txt
+go.sum

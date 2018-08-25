@@ -32,7 +32,7 @@ func TestHttpCheck(t *testing.T) {
 
 	t.Log("launch server")
 	go server.ListenAndServe()
-	time.Sleep(1000)
+	time.Sleep(3 * time.Second)
 	defer server.Shutdown(nil)
 
 	t.Log("check real health ")

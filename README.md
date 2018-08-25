@@ -33,7 +33,13 @@ glide install
 go build mesher.go
 ./mesher
 ```
-
+or use go mod(go 1.11+, experimental but a recommended way)
+```shell
+cd mesher
+GO111MODULE=on go mod download
+#optional
+GO111MODULE=on go mod vendor
+```
 # Documentations
 
 https://mesher.readthedocs.io/en/latest/

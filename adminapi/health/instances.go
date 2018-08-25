@@ -27,16 +27,15 @@ import (
 	"github.com/go-chassis/go-chassis/core/config"
 	"github.com/go-chassis/go-chassis/core/lager"
 	"github.com/go-chassis/go-chassis/core/registry"
-	//	metricsink "github.com/huaweicse/cse-collector"
 )
 
 //GetMesherHealth returns health
 func GetMesherHealth() *Health {
 	serviceName, version, err := getServiceStatus()
 	resp := &Health{
-		ServiceName: serviceName,
-		Version:     version,
-		Status:      Green,
+		ServiceName:                 serviceName,
+		Version:                     version,
+		Status:                      Green,
 		ConnectedConfigCenterClient: isConfigCenterConnected(),
 		//		ConnectedMonitoring:         isMornitorServerConnected(),
 		Error: "",
