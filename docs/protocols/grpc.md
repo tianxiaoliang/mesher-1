@@ -21,6 +21,7 @@ Assume you original client is
 ```
 after modify 
 ```go
+        //target address is consist of the provider name(in that case "Server") and provider port
 	conn, err := grpc.Dial("Server:50051",
 		grpc.WithInsecure(),
 		grpc.WithDialer(func(addr string, time time.Duration) (net.Conn, error) {
