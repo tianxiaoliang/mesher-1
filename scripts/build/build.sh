@@ -9,10 +9,7 @@ export PROJECT_DIR=$(dirname $BUILD_DIR)
 
 mkdir -p /var/lib/jenkins/workspace/Mesher/src/github.com/go-chassis/mesher
 
-mv -v /var/lib/jenkins/workspace/mesher/* /var/lib/jenkins/workspace/Mesher/src/github.com/go-chassis/mesher/
-
-mkdir -p /var/lib/jenkins/workspace/mesher/scripts/build
-cp /var/lib/jenkins/workspace/Mesher/src/github.com/go-chassis/mesher/scripts/build/build_image.sh /var/lib/jenkins/workspace/mesher/scripts/build
+cp -r /var/lib/jenkins/workspace/mesher/* /var/lib/jenkins/workspace/Mesher/src/github.com/go-chassis/mesher/
 
 release_dir=$PROJECT_DIR/release
 repo="github.com"
@@ -30,7 +27,8 @@ if [ $CHECKOUT_VERSION == "latest" ]; then
 else
     git checkout $CHECKOUT_VERSION
 fi
-glide install
+GO111MODULE=on go mod download
+GO111MODULE=on go mod vendor
 go build -o mesher -a
 
 
