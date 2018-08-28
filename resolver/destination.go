@@ -78,7 +78,7 @@ func New() DestinationResolver {
 	return &DefaultDestinationResolver{}
 }
 
-//GetDestinationResolver returns destinationResolver object
+//GetDestinationResolver returns destinationResolver pointer
 func GetDestinationResolver(name string) DestinationResolver {
 	return drMap[name]
 }
@@ -89,15 +89,15 @@ func InstallDestinationResolverPlugin(name string, newFunc func() DestinationRes
 	log.Printf("Installed DestinationResolver Plugin, name=%s", name)
 }
 
-//InstallDefaultDestinationResolver install the default implementation, so that you don't need to set config file
-func InstallDefaultDestinationResolver(name string, dr DestinationResolver) {
+//SetDefaultDestinationResolver set the a default implementation for a protocol, so that you don't need to set config file
+func SetDefaultDestinationResolver(name string, dr DestinationResolver) {
 	drMap[name] = dr
-	log.Printf("Installed default DestinationResolver name=%s", name)
+	log.Printf("Installed default DestinationResolver for [%s]", name)
 }
 func init() {
 	DestinationResolverPlugins = make(map[string]func() DestinationResolver)
 	InstallDestinationResolverPlugin(DefaultPlugin, New)
-	InstallDefaultDestinationResolver("http", &DefaultDestinationResolver{})
+	SetDefaultDestinationResolver("http", &DefaultDestinationResolver{})
 }
 
 //Init function reads config and initiates it

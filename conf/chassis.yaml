@@ -1,6 +1,8 @@
 ---
 cse:
   protocols:
+    grpc:
+      listenAddress: 127.0.0.1:40101
     http:
       listenAddress: 127.0.0.1:30101
     rest-admin:

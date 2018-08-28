@@ -47,17 +47,20 @@ type dubboChassisClient struct {
 }
 
 //NewDubboChassisClient create new client
-func NewDubboChassisClient(options client.Options) client.ProtocolClient {
+func NewDubboChassisClient(options client.Options) (client.ProtocolClient, error) {
 
 	rc := &dubboChassisClient{
 		once: sync.Once{},
 		opts: options,
 	}
-	return client.ProtocolClient(rc)
+	return client.ProtocolClient(rc), nil
 }
 
 func (c *dubboChassisClient) String() string {
 	return "highway_client"
+}
+func (c *dubboChassisClient) Close() error {
+	return nil
 }
 
 func (c *dubboChassisClient) Call(ctx context.Context, addr string, inv *invocation.Invocation, rsp interface{}) error {

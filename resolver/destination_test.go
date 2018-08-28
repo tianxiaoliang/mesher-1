@@ -85,7 +85,7 @@ func TestGetDestinationResolver(t *testing.T) {
 	assert.NotNil(t, dr)
 	dr = GetDestinationResolver("http_nil")
 	assert.Nil(t, dr)
-	InstallDefaultDestinationResolver("http_nil", &DefaultDestinationResolver{})
+	SetDefaultDestinationResolver("http_nil", &DefaultDestinationResolver{})
 	dr = GetDestinationResolver("http_nil")
 	assert.NotNil(t, dr)
 }
@@ -97,6 +97,6 @@ func BenchmarkDefaultDestinationResolver_Resolve(b *testing.B) {
 	mystring := "Server"
 	var destinationString = &mystring
 	for i := 0; i < b.N; i++ {
-		  d.Resolve("abc", map[string]string{}, "http://127.0.0.1:80/test", destinationString)
+		d.Resolve("abc", map[string]string{}, "http://127.0.0.1:80/test", destinationString)
 	}
 }

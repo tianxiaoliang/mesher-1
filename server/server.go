@@ -26,6 +26,7 @@ func Run() {
 	bootstrap.SetHandlers()
 	if err := chassis.Init(); err != nil {
 		lager.Logger.Error("Go chassis init failed, Mesher is not available", err)
+		panic(err)
 	}
 	if err := bootstrap.Start(); err != nil {
 		lager.Logger.Error("Bootstrap failed ", err)
