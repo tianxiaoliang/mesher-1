@@ -2,21 +2,27 @@
 
 ### Configurations
 
-Listen on isolated port, it gives a way to interact with mesher
+admin api server leverage protocol server, it listens on isolated port, by default admin is enabled, and default value of goRuntimeMetrics is false.
 
+To start api server, set protocol server config in chassis.yaml
+```yaml
+cse:
+   protocols:
+     rest-admin:
+       listenAddress: 0.0.0.0:30102  # listen addr for adminAPI
+```
+
+tune admin api in mesher.yaml
 ```yaml
 admin: 
   enable: true
-  serverUri : 127.0.0.1:30102 # addr on listening
   goRuntimeMetrics : true # enable metrics
 ```
 
-**enable**
+
+**admin.enable**
 >*(optional, bool)* default is false
 
-**serverUri**
->*(optional, string)* Listen address,default is 0.0.0.0:30102
-
-**goRuntimeMetrics**
+**admin.goRuntimeMetrics**
 >*(optional, bool)* default is false, enable to expose go runtime metrics in /v1/mesher/metrics
 
