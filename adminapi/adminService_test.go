@@ -18,25 +18,15 @@
 package adminapi
 
 import (
-	"errors"
+	"testing"
+
 	"github.com/go-chassis/go-chassis/core/config"
 	"github.com/go-chassis/go-chassis/core/config/model"
 	"github.com/go-chassis/go-chassis/core/lager"
-	"github.com/go-chassis/go-chassis/core/registry"
-	"github.com/go-chassis/go-chassis/core/registry/mock"
-	"github.com/go-chassis/go-chassis/core/router"
 	_ "github.com/go-chassis/go-chassis/core/router/cse"
-	"github.com/emicklei/go-restful"
-	routerMock "github.com/go-chassis/mesher/adminapi/route/mock"
-	ver "github.com/go-chassis/mesher/adminapi/version"
 	mesherconfig "github.com/go-chassis/mesher/config"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v2"
-	"net/http"
-	"net/http/httptest"
-	"testing"
-	//"github.com/go-chassis/go-chassis/server/restful"
 )
 
 var globalConfig = `
@@ -88,108 +78,6 @@ routeRule:
         weight: 100
 `
 
-func TestAdminService_GetVersion(t *testing.T) {
-	t.Log("testing /v1/mesher/version admin api of mesher")
-	assert := assert.New(t)
-
-	req, err := http.NewRequest(http.MethodGet, "http://localhost:8080/v1/mesher/version", nil)
-	require.Nil(t, err)
-	rr := httptest.NewRecorder()
-
-	restfulRequest := restful.NewRequest(req)
-	restfulResponse := restful.NewResponse(rr)
-	GetVersion(restfulRequest, restfulResponse)
-
-	t.Log("Response : ", rr.Body.String())
-	assert.Equal(rr.Code, http.StatusOK)
-	assert.NotEmpty(rr.Body.String())
-
-}
-
-func TestAdminService_MesherHealthAPI(t *testing.T) {
-	t.Log("testing /v1/mesher/health admin api of mesher when instance of mesher is present in SC")
-	assert := assert.New(t)
-	config.GlobalDefinition = new(model.GlobalCfg)
-	yaml.Unmarshal([]byte(globalConfig), config.GlobalDefinition)
-	config.SelfServiceName = "mesher"
-	config.MicroserviceDefinition = &model.MicroserviceCfg{}
-	req, err := http.NewRequest(http.MethodGet, "http://localhost:8080/v1/mesher/health", nil)
-	require.Nil(t, err)
-	rr := httptest.NewRecorder()
-
-	mockinstances := []*registry.MicroServiceInstance{
-		&registry.MicroServiceInstance{
-			InstanceID: "testInstanceId",
-			ServiceID:  "testMicroserviceId",
-		},
-	}
-	testRegistryObj := new(mock.RegistratorMock)
-	testDiscoveryObj := new(mock.DiscoveryMock)
-	registry.DefaultRegistrator = testRegistryObj
-	registry.DefaultServiceDiscoveryService = testDiscoveryObj
-	testDiscoveryObj.On("GetMicroServiceID", "sockshop", "mesher", ver.DefaultVersion, "").Return("testMicroserviceId", nil)
-	testDiscoveryObj.On("GetMicroServiceInstances", "testMicroserviceId", "testMicroserviceId").Return(mockinstances, nil)
-	testRegistryObj.On("Heartbeat", "testMicroserviceId", "testInstanceId").Return(true, nil)
-
-	restfulRequest := restful.NewRequest(req)
-	restfulResponse := restful.NewResponse(rr)
-	MesherHealth(restfulRequest, restfulResponse)
-
-	t.Log("Response : ", rr.Body.String())
-	t.Log("Response Status Code : ", rr.Code)
-	assert.Equal(rr.Code, http.StatusOK)
-}
-
-func TestAdminService_MesherHealth2(t *testing.T) {
-	t.Log("testing /v1/mesher/health admin api of mesher when no instance of mesher is not present in SC")
-	assert := assert.New(t)
-	lager.Initialize("", "INFO", "", "size", true, 1, 10, 7)
-	config.GlobalDefinition = new(model.GlobalCfg)
-	yaml.Unmarshal([]byte(globalConfig), config.GlobalDefinition)
-
-	config.SelfServiceName = "mesher"
-	config.MicroserviceDefinition = &model.MicroserviceCfg{}
-
-	req, err := http.NewRequest(http.MethodGet, "http://localhost:8080/v1/mesher/health", nil)
-	require.Nil(t, err)
-	rr := httptest.NewRecorder()
-
-	testDiscoveryObj := new(mock.DiscoveryMock)
-	registry.DefaultServiceDiscoveryService = testDiscoveryObj
-	testDiscoveryObj.On("GetMicroServiceID", "sockshop", "mesher", ver.DefaultVersion, "").Return("", errors.New("MOCK_ERROR"))
-
-	restfulRequest := restful.NewRequest(req)
-	restfulResponse := restful.NewResponse(rr)
-	MesherHealth(restfulRequest, restfulResponse)
-
-	t.Log("Response : ", rr.Body.String())
-	t.Log("Response Status Code : ", rr.Code)
-	assert.Equal(rr.Code, http.StatusInternalServerError)
-
-}
-
-func TestAdminService_RouteRule(t *testing.T) {
-	t.Log("testing /v1/mesher/routeRule admin api of mesher ")
-	ast := assert.New(t)
-	lager.Initialize("", "INFO", "", "size", true, 1, 10, 7)
-	mesherConfig := new(model.RouterConfig)
-	yaml.Unmarshal([]byte(mesherConf), mesherConfig)
-	testRouterMock := &routerMock.RouterMock{}
-	router.DefaultRouter = testRouterMock
-
-	req, err := http.NewRequest(http.MethodGet, "http://localhost:8080/v1/mesher/routeRule", nil)
-	require.Nil(t, err)
-	rr := httptest.NewRecorder()
-
-	restfulRequest := restful.NewRequest(req)
-	restfulResponse := restful.NewResponse(rr)
-	RouteRule(restfulRequest, restfulResponse)
-
-	t.Log("Response : ", rr.Body.String())
-	t.Log("Response Status Code : ", rr.Code)
-	ast.Equal(rr.Code, http.StatusOK)
-}
-
 func TestInit(t *testing.T) {
 	t.Log("testing mesher admin protocol when protocol URI is valid")
 	assert := assert.New(t)
@@ -197,6 +85,12 @@ func TestInit(t *testing.T) {
 	mesherConfig := new(mesherconfig.MesherConfig)
 	yaml.Unmarshal([]byte(mesherConf), mesherConfig)
 	mesherconfig.SetConfig(mesherConfig)
+	if config.GlobalDefinition == nil {
+		config.GlobalDefinition = &model.GlobalCfg{
+			AppID: "default",
+		}
+
+	}
 	err := Init()
 	assert.Nil(err)
 }
@@ -208,6 +102,12 @@ func TestInit2(t *testing.T) {
 	yaml.Unmarshal([]byte(mesherConf), mesherConfig)
 	mesherConfig.Admin.ServerURI = "INVALID"
 	mesherconfig.SetConfig(mesherConfig)
+	if config.GlobalDefinition == nil {
+		config.GlobalDefinition = &model.GlobalCfg{
+			AppID: "default",
+		}
+
+	}
 	err := Init()
-	assert.NotNil(err)
+	assert.Nil(err)
 }
