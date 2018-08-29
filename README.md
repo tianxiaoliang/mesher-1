@@ -26,20 +26,16 @@ Refer to [mesher-examples](https://github.com/go-chassis/mesher-examples)
 
 1. Install ServiceComb [service-center](https://github.com/ServiceComb/service-center/releases)
 
-2. build and run
-```shell
-cd mesher
-glide install
-go build mesher.go
-./mesher
-```
-or use go mod(go 1.11+, experimental but a recommended way)
+2. build and run, use go mod(go 1.11+, experimental but a recommended way)
 ```shell
 cd mesher
 GO111MODULE=on go mod download
 #optional
 GO111MODULE=on go mod vendor
+go build mesher.go
+./mesher
 ```
+
 # Documentations
 
 https://mesher.readthedocs.io/en/latest/

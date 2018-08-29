@@ -13,10 +13,12 @@ the network traffic: curl->mesher->service
 2.Install [go-chassis](https://go-chassis.readthedocs.io/en/latest/getstarted/install.html) and 
 run [rest server](https://github.com/go-chassis/go-chassis/tree/master/examples/rest/server)
 
-3.Build and run mesher.go
+2. Build and run, use go mod(go 1.11+, experimental but a recommended way)
 ```shell
 cd mesher
-glide install
+GO111MODULE=on go mod download
+#optional
+GO111MODULE=on go mod vendor
 go build mesher.go
 ./mesher
 ```
