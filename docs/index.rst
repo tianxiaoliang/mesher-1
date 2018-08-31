@@ -14,6 +14,6 @@ Welcome to Mesher's documentation!
    get-started
    configuration
    protocols
-
+   sidecar
 
 
