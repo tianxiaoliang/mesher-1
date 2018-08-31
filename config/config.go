@@ -114,7 +114,7 @@ func SetKeyValueByFile(key, f string) string {
 	}
 	b, err := ioutil.ReadFile(f)
 	if err != nil {
-		lager.Logger.Error("Can not read mesher.yaml", err)
+		lager.Logger.Error("Can not read mesher.yaml: " + err.Error())
 		return ""
 	}
 	contents = string(b)

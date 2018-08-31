@@ -117,11 +117,11 @@ func (this *DubboClientConnection) MsgRecvLoop() {
 		size, err := this.conn.Read(buf)
 		if err != nil {
 			if nerr, ok := err.(net.Error); ok && nerr.Timeout() {
-				lager.Logger.Error("client Recv head time errr:", err)
+				lager.Logger.Error("client Recv head time err:" + err.Error())
 				//time.Sleep(time.Second * 3)
 				continue
 			}
-			lager.Logger.Error("client Recv head errr:", err)
+			lager.Logger.Error("client Recv head err:" + err.Error())
 			break
 		}
 
@@ -145,7 +145,7 @@ func (this *DubboClientConnection) MsgRecvLoop() {
 					continue
 				}
 				//通知关闭连接
-				lager.Logger.Error("Recv client body err:", err)
+				lager.Logger.Error("Recv client body err:" + err.Error())
 				goto exitloop
 			}
 			count += size
@@ -183,7 +183,7 @@ func (this *DubboClientConnection) MsgSndLoop() {
 	for {
 		msg, err := this.msgque.Dequeue()
 		if err != nil {
-			lager.Logger.Error("MsgSndLoop Dequeue ", err)
+			lager.Logger.Error("MsgSndLoop Dequeue:" + err.Error())
 			break
 		}
 		var buffer util.WriteBuffer
@@ -191,7 +191,7 @@ func (this *DubboClientConnection) MsgSndLoop() {
 		this.codec.EncodeDubboReq(msg.(*dubbo.Request), &buffer)
 		_, err = this.conn.Write(buffer.GetValidData())
 		if err != nil {
-			lager.Logger.Error("Send exception,", err)
+			lager.Logger.Error("Send exception:" + err.Error())
 			break
 		}
 	}

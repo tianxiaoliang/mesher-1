@@ -76,13 +76,13 @@ func (c *dubboChassisClient) Call(ctx context.Context, addr string, inv *invocat
 	lager.Logger.Info("Dubbo invoke endPont: " + endPoint)
 	dubboCli, err := dubboClient.CachedClients.GetClient(endPoint)
 	if err != nil {
-		lager.Logger.Error("Invalid Request addr ="+endPoint, err)
+		lager.Logger.Errorf("Invalid Request addr %s %s", endPoint, err)
 		return err
 	}
 
 	dubboRsp, errSnd := dubboCli.Send(dubboReq)
 	if errSnd != nil {
-		lager.Logger.Error("Dubbo server exception:", errSnd)
+		lager.Logger.Error("Dubbo server exception: " + errSnd.Error())
 		return errSnd
 	}
 	resp := rsp.(*dubboClient.WrapResponse)

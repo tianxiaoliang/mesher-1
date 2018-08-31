@@ -34,7 +34,7 @@ func (dr *GPRCDefaultDestinationResolver) Resolve(sourceAddr string, header map[
 	s := strings.Split(rawURI, ":")
 	if len(s) != 2 {
 		err := fmt.Errorf("can not parse [%s]", rawURI)
-		lager.Logger.Error("", err)
+		lager.Logger.Error(err.Error())
 		return "", err
 	}
 

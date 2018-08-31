@@ -176,7 +176,7 @@ func TransparentForwardHandler(w http.ResponseWriter, r *http.Request) {
 	dubboCtx := &dubbo.InvokeContext{dubbo.NewDubboRequest(), &dubbo.DubboRsp{}, nil, "", ""}
 	err := ConvertHTTPReqToDubboReq(r, dubboCtx, inv)
 	if err != nil {
-		lager.Logger.Error("Invalid Request :", err)
+		lager.Logger.Error("Invalid Request: " + err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -184,7 +184,7 @@ func TransparentForwardHandler(w http.ResponseWriter, r *http.Request) {
 
 	c, err := handler.GetChain(common.Provider, mesherCommon.ChainProviderIncoming)
 	if err != nil {
-		lager.Logger.Error("Get Chain failed.", err)
+		lager.Logger.Error("Get Chain failed: " + err.Error())
 		return
 	}
 	c.Next(inv, func(ir *invocation.Response) error {

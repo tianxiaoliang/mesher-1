@@ -118,16 +118,16 @@ func (d *DubboServer) Start() error {
 	}
 	ip := net.ParseIP(host)
 	if ip == nil {
-		return &util.BaseError{"Invalid host"}
+		return &util.BaseError{"invalid host"}
 	}
 	tcpAddr, err := net.ResolveTCPAddr("tcp", d.opts.Address)
 	if err != nil {
-		lager.Logger.Error("ResolveTCPAddr err: ", err)
+		lager.Logger.Error("ResolveTCPAddr err: " + err.Error())
 		return err
 	}
 	l, err := net.ListenTCP("tcp", tcpAddr)
 	if err != nil {
-		lager.Logger.Error("listening falied, reason:", err)
+		lager.Logger.Error("listening failed, reason: " + err.Error())
 		return err
 	}
 	d.routineMgr.Spawn(d, l, "Acceptloop")

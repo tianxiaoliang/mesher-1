@@ -55,7 +55,7 @@ type DefaultDestinationResolver struct {
 func (dr *DefaultDestinationResolver) Resolve(sourceAddr string, header map[string]string, rawURI string, destinationName *string) (string, error) {
 	u, err := url.Parse(rawURI)
 	if err != nil {
-		lager.Logger.Error("Can not parse url", err)
+		lager.Logger.Error("Can not parse url: " + err.Error())
 		return "", err
 	}
 

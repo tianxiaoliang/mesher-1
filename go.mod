@@ -1,10 +1,9 @@
 module github.com/go-chassis/mesher
 
 require (
-	github.com/emicklei/go-restful v2.8.0+incompatible
 	github.com/emicklei/go-restful-swagger12 v0.0.0-20170926063155-7524189396c6 // indirect
-	github.com/go-chassis/go-cc-client v0.0.0-20180803084655-75b751c2f183
-	github.com/go-chassis/go-chassis v0.7.2-0.20180828032500-d9b2138fb00b
+	github.com/go-chassis/go-cc-client v0.0.0-20180831085349-c2bb6cef1640
+	github.com/go-chassis/go-chassis v0.8.2-0.20180831125844-6a2f0ab47244
 	github.com/go-chassis/gohessian v0.0.0-20180702061429-e5130c25af55
 	github.com/gogo/protobuf v1.1.1
 	github.com/patrickmn/go-cache v2.1.0+incompatible

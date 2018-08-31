@@ -82,12 +82,12 @@ func (d *SimDubboRegistryServer) Start() error {
 	}
 	tcpAddr, err := net.ResolveTCPAddr("tcp", d.opts.Address)
 	if err != nil {
-		lager.Logger.Error("ResolveTCPAddr err: ", err)
+		lager.Logger.Error("ResolveTCPAddr err: " + err.Error())
 		return err
 	}
 	l, err := net.ListenTCP("tcp", tcpAddr)
 	if err != nil {
-		lager.Logger.Error("listening falied, reason:", err)
+		lager.Logger.Error("listening falied, reason: " + err.Error())
 		return err
 	}
 	go d.AcceptLoop(l)
@@ -100,7 +100,7 @@ func (d *SimDubboRegistryServer) AcceptLoop(l *net.TCPListener) {
 		for {
 			conn, err := l.Accept()
 			if err != nil {
-				lager.Logger.Error("tcp conn error: ", err)
+				lager.Logger.Error("tcp conn error: " + err.Error())
 				continue
 			}
 

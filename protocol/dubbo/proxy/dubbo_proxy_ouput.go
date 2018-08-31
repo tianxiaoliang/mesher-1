@@ -78,7 +78,7 @@ func ConvertDubboReqToHTTPReq(ctx *dubbo.InvokeContext, dubboReq *dubbo.Request)
 
 	methd := schema.GetMethodByInterface(iName, operateID)
 	if methd == nil {
-		lager.Logger.Error("GetMethodByInterface failed:", &util.BaseError{"Cannot find the method"})
+		lager.Logger.Error("GetMethodByInterface failed: Cannot find the method")
 		return nil
 	}
 	ctx.Method = methd
@@ -125,7 +125,7 @@ func ConvertDubboReqToHTTPReq(ctx *dubbo.InvokeContext, dubboReq *dubbo.Request)
 	restReq.SetURI(uri)
 	tmpName := schema.GetSvcNameByInterface(iName)
 	if tmpName == "" {
-		lager.Logger.Error("GetSvcNameByInterface failed:", &util.BaseError{"Cannot find the svc"})
+		lager.Logger.Error("GetSvcNameByInterface failed: Cannot find the svc")
 		return nil
 	}
 	restReq.Req.URL.Host = tmpName // must after setURI
@@ -200,7 +200,7 @@ func Handle(ctx *dubbo.InvokeContext) error {
 			if config.Mode == mesherCommon.ModeSidecar {
 				c, err = handler.GetChain(common.Consumer, mesherCommon.ChainConsumerOutgoing)
 				if err != nil {
-					lager.Logger.Error("Get Consumer chain failed.", err)
+					lager.Logger.Error("Get Consumer chain failed: " + err.Error())
 					return err
 				}
 			}
@@ -212,7 +212,7 @@ func Handle(ctx *dubbo.InvokeContext) error {
 			ctx.Req.SetAttachment(ProxyTag, "")
 			c, err = handler.GetChain(common.Provider, mesherCommon.ChainProviderIncoming)
 			if err != nil {
-				lager.Logger.Error("Get Provider Chain failed.", err)
+				lager.Logger.Error("Get Provider Chain failed: " + err.Error())
 				return err
 			}
 			c.Next(inv, func(ir *invocation.Response) error {
@@ -255,7 +255,7 @@ func handleDubboRequest(inv *invocation.Invocation, ctx *dubbo.InvokeContext, ir
 		ctx.Rsp = ir.Result.(*dubboclient.WrapResponse).Resp
 	} else {
 		err := protocol.ErrNilResult
-		lager.Logger.Error("CAll Chain  failed", err)
+		lager.Logger.Error("CAll Chain  failed: " + err.Error())
 		return err
 	}
 
@@ -306,7 +306,7 @@ func ProxyRestHandler(ctx *dubbo.InvokeContext) error {
 	if config.Mode == mesherCommon.ModeSidecar {
 		c, err = handler.GetChain(common.Consumer, mesherCommon.ChainConsumerOutgoing)
 		if err != nil {
-			lager.Logger.Error("Get chain failed.", err)
+			lager.Logger.Error("Get chain failed: " + err.Error())
 			return err
 		}
 		if si == nil {

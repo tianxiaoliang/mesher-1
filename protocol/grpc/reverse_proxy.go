@@ -35,7 +35,7 @@ func LocalRequestHandler(srv interface{}, serverStream grpc.ServerStream) error 
 	}
 	c, err := handler.GetChain(common2.Consumer, common.ChainConsumerOutgoing)
 	if err != nil {
-		lager.Logger.Error("Get chain failed", err)
+		lager.Logger.Error("Get chain failed: " + err.Error())
 		return err
 	}
 	var invRsp *invocation.Response
@@ -65,7 +65,7 @@ func RemoteRequestHandler(srv interface{}, serverStream grpc.ServerStream) error
 	}
 	c, err := handler.GetChain(common2.Provider, common.ChainProviderIncoming)
 	if err != nil {
-		lager.Logger.Error("Get chain failed", err)
+		lager.Logger.Error("Get chain failed: " + err.Error())
 		return err
 	}
 	var invRsp *invocation.Response

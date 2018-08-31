@@ -136,13 +136,13 @@ func (this *DubboClient) Open() error {
 func (this *DubboClient) open() error {
 	tcpAddr, err := net.ResolveTCPAddr("tcp", this.addr)
 	if err != nil {
-		lager.Logger.Error(err.Error(), err)
+		lager.Logger.Error(err.Error())
 		return err
 	}
 	conn, errDial := net.DialTCP("tcp", nil, tcpAddr)
 
 	if errDial != nil {
-		lager.Logger.Error("the addr: "+this.addr, errDial)
+		lager.Logger.Errorf("the addr: %s %s ", this.addr, errDial)
 		return errDial
 	}
 	this.conn = NewDubboClientConnetction(conn, this, nil)

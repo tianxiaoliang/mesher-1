@@ -41,7 +41,7 @@ func GetMesherHealth() *Health {
 		Error: "",
 	}
 	if err != nil {
-		lager.Logger.Error("health check failed", err)
+		lager.Logger.Error("health check failed: " + err.Error())
 		resp.Status = Red
 		resp.Error = err.Error()
 	}

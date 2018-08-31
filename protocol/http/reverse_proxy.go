@@ -116,7 +116,7 @@ func LocalRequestHandler(w http.ResponseWriter, r *http.Request) {
 	c, err := handler.GetChain(chassisCommon.Consumer, common.ChainConsumerOutgoing)
 	if err != nil {
 		handleErrorResponse(inv, w, http.StatusBadGateway, err)
-		lager.Logger.Error("Get chain failed", err)
+		lager.Logger.Error("Get chain failed: " + err.Error())
 		return
 	}
 	defer func(begin time.Time) {
@@ -135,7 +135,7 @@ func LocalRequestHandler(w http.ResponseWriter, r *http.Request) {
 	})
 	resp, err := handleRequest(w, inv, invRsp)
 	if err != nil {
-		lager.Logger.Error("Handle request failed", err)
+		lager.Logger.Error("Handle request failed: " + err.Error())
 		return
 	}
 	metrics.RecordResponse(inv, resp.GetStatusCode())
@@ -163,7 +163,7 @@ func RemoteRequestHandler(w http.ResponseWriter, r *http.Request) {
 	c, err := handler.GetChain(chassisCommon.Provider, common.ChainProviderIncoming)
 	if err != nil {
 		handleErrorResponse(inv, w, http.StatusBadGateway, err)
-		lager.Logger.Error("Get chain failed", err)
+		lager.Logger.Error("Get chain failed: " + err.Error())
 		return
 	}
 	if err = SetLocalServiceAddress(inv, r.Header.Get("X-Forwarded-Port")); err != nil {
@@ -183,7 +183,7 @@ func RemoteRequestHandler(w http.ResponseWriter, r *http.Request) {
 		return nil
 	})
 	if _, err = handleRequest(w, inv, invRsp); err != nil {
-		lager.Logger.Error("Handle request failed", err)
+		lager.Logger.Error("Handle request failed: " + err.Error())
 	}
 }
 

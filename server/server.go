@@ -25,16 +25,16 @@ func Run() {
 	bootstrap.RegisterFramework()
 	bootstrap.SetHandlers()
 	if err := chassis.Init(); err != nil {
-		lager.Logger.Error("Go chassis init failed, Mesher is not available", err)
+		lager.Logger.Error("Go chassis init failed, Mesher is not available: " + err.Error())
 		panic(err)
 	}
 	if err := bootstrap.Start(); err != nil {
-		lager.Logger.Error("Bootstrap failed ", err)
+		lager.Logger.Error("Bootstrap failed: " + err.Error())
 		panic(err)
 	}
 	lager.Logger.Infof("Version is %s", version.Ver().Version)
 	if err := health.Run(); err != nil {
-		lager.Logger.Error("Health manager start failed ", err)
+		lager.Logger.Error("Health manager start failed: " + err.Error())
 		panic(err)
 	}
 	profile()
@@ -50,7 +50,7 @@ func profile() {
 				}
 				lager.Logger.Warn("Enable pprof on "+config.GetConfig().PProf.Listen, nil)
 				if err := http.ListenAndServe(config.GetConfig().PProf.Listen, nil); err != nil {
-					lager.Logger.Error("Can not enable pprof", err)
+					lager.Logger.Error("Can not enable pprof: " + err.Error())
 				}
 			}()
 		}

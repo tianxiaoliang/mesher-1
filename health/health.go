@@ -62,7 +62,7 @@ func UpdateInstanceStatus(err error) {
 //ChangeStatus change status in local and remote
 func ChangeStatus(status string) {
 	if err := registry.DefaultRegistrator.UpdateMicroServiceInstanceStatus(runtime.ServiceID, runtime.InstanceID, status); err != nil {
-		lager.Logger.Error("update instance status failed", err)
+		lager.Logger.Error("update instance status failed:" + err.Error())
 		return
 	}
 	runtime.InstanceStatus = status
@@ -83,7 +83,7 @@ func runCheckers(c *config.HealthCheck, l7check L7Check, address string, deal De
 		for range ticker.C {
 			err := CheckService(c, l7check, address)
 			if err != nil {
-				lager.Logger.Errorf(err, "health check failed for service port[%s]:", c.Port)
+				lager.Logger.Errorf("health check failed for service port[%s]: %s", c.Port, err)
 			}
 			deal(err)
 		}
