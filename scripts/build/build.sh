@@ -3,7 +3,7 @@ set -e
 set -x
 export PATH=$PATH:/usr/local/go/bin
 export GOPATH=/var/lib/jenkins/workspace/Mesher
-rm -rf /var/lib/jenkins/workspace/Mesher
+rm -rf /var/lib/jenkins/workspace/Mesher/src
 export BUILD_DIR=/var/lib/jenkins/workspace/Mesher
 export PROJECT_DIR=$(dirname $BUILD_DIR)
 
